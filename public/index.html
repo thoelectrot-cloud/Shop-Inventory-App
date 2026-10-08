@@ -1,0 +1,2994 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Stockroom Central Store</title>
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <link rel="apple-touch-icon" href="icon.png?v=2" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+            colors: {
+              appbg: "#FAFAF9",
+              brand: "#2B362F",
+              brandtext: "#111827",
+              muted: "#6B7280",
+              lightborder: "#F3F4F6",
+              cardGreenBg: "#ECFDF5",
+              cardGreenIcon: "#059669",
+              cardPurpleBg: "#F3F0FF",
+              cardPurpleIcon: "#7C3AED",
+              cardOrangeBg: "#FFF7ED",
+              cardOrangeIcon: "#C2410C",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-appbg text-brandtext font-sans antialiased selection:bg-brand selection:text-white"
+  >
+    <!-- Mobile App Container -->
+    <div
+      class="max-w-[400px] mx-auto bg-appbg min-h-screen relative pb-28 shadow-2xl sm:border-x border-lightborder"
+    >
+      <!-- Sticky Header -->
+      <header
+        class="sticky top-0 z-50 bg-appbg/95 backdrop-blur-md flex justify-between items-center px-5 pt-12 pb-4 border-b border-gray-200 shadow-sm relative"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 bg-brand rounded-[10px] flex items-center justify-center text-white"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              class="w-5 h-5"
+            >
+              <path
+                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+              ></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </div>
+          <div class="flex flex-col">
+            <span
+              class="text-[14px] font-bold leading-tight tracking-tight text-brandtext"
+              >Stockroom</span
+            >
+            <span
+              class="text-[9px] font-semibold text-muted tracking-widest uppercase mt-[1px]"
+              >Central Store</span
+            >
+          </div>
+        </div>
+
+        <div class="relative">
+          <button
+            onclick="openCartModal()"
+            class="w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center relative shadow-sm hover:bg-gray-50 transition"
+          >
+            <!-- Dynamic Red Badge (Starts Hidden) -->
+            <span
+              id="cartBadgeCounter"
+              class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white"
+              >0</span
+            >
+
+            <!-- Sleek Shopping Cart SVG -->
+            <svg
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-5 h-5 text-gray-700"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+              />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="mt-2">
+        <!-- TAB 1: OVERVIEW -->
+        <div id="tab-overview" class="px-5">
+          <div>
+            <p
+              class="text-[10px] font-bold text-muted tracking-[0.15em] uppercase mb-1"
+            >
+              Store Overview
+            </p>
+            <h1
+              class="text-[32px] font-bold tracking-tight text-brandtext leading-tight"
+            >
+              Good morning, User.
+            </h1>
+            <p class="text-[13px] text-gray-500 mt-2 leading-relaxed pr-4">
+              Here's what's happening at Stockroom Central Store today.
+            </p>
+          </div>
+
+          <button
+            onclick="switchTab('inventory')"
+            class="w-full mt-6 bg-brand hover:opacity-90 active:scale-[0.98] transition-all text-white py-[14px] rounded-2xl flex items-center justify-center gap-2 shadow-sm"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              class="w-[18px] h-[18px]"
+            >
+              <path
+                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+              ></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <span class="text-[14px] font-semibold">View inventory</span>
+          </button>
+
+          <div class="mt-6 flex flex-col gap-4">
+            <div
+              class="bg-white p-5 rounded-[20px] border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.02)] relative"
+            >
+              <div class="flex justify-between items-start">
+                <p class="text-[13px] font-medium text-gray-500">
+                  Units in stock
+                </p>
+                <div
+                  class="w-9 h-9 rounded-xl bg-cardGreenBg text-cardGreenIcon flex items-center justify-center"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    class="w-4 h-4"
+                  >
+                    <path
+                      d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="mt-2">
+                <h2
+                  id="overview-units"
+                  class="text-[32px] font-bold tracking-tight text-brandtext"
+                >
+                  --
+                </h2>
+                <p class="text-[11px] font-medium text-gray-400 mt-0.5">
+                  Total across store
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="bg-white p-5 rounded-[20px] border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.02)] relative"
+            >
+              <div class="flex justify-between items-start">
+                <p class="text-[13px] font-medium text-gray-500">
+                  Today's revenue
+                </p>
+                <div
+                  class="w-9 h-9 rounded-xl bg-cardPurpleBg text-cardPurpleIcon flex items-center justify-center"
+                >
+                  <svg
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="currentColor"
+                    class="w-4 h-4"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="mt-2">
+                <h2
+                  id="overview-revenue"
+                  class="text-[32px] font-bold tracking-tight text-brandtext"
+                >
+                  $--
+                </h2>
+                <p class="text-[11px] font-medium text-gray-400 mt-0.5">
+                  Live tracking
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="bg-white p-5 rounded-[20px] border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.02)] relative"
+            >
+              <div class="flex justify-between items-start">
+                <p class="text-[13px] font-medium text-gray-500">Low stock</p>
+                <div
+                  class="w-9 h-9 rounded-xl bg-cardOrangeBg text-cardOrangeIcon flex items-center justify-center"
+                >
+                  <svg
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="currentColor"
+                    class="w-4 h-4"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="mt-2">
+                <h2
+                  id="overview-low-stock"
+                  class="text-[32px] font-bold tracking-tight text-brandtext"
+                >
+                  --
+                </h2>
+                <p class="text-[11px] font-medium text-gray-400 mt-0.5">
+                  Products need attention
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================== -->
+        <!-- INVENTORY VIEW (DRILL-DOWN)    -->
+        <!-- ============================== -->
+        <div id="tab-inventory" class="hidden pb-24">
+          <!-- Smart Global Search -->
+          <div class="px-5 pt-6 mt-2">
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"
+              >
+                <svg
+                  class="h-5 w-5 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+              <!-- Searching "ysl pink" will bypass the drill-down entirely -->
+              <input
+                type="text"
+                id="globalSearchInput"
+                onkeyup="handleGlobalSearch()"
+                placeholder="Search 'ysl pink', 'coach'..."
+                class="w-full bg-white border border-gray-200 rounded-[16px] py-3.5 pl-11 pr-4 text-[14px] font-medium text-brandtext focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-sm"
+              />
+            </div>
+          </div>
+
+          <!-- Navigation Header & Breadcrumbs -->
+          <div class="px-5 pt-6 pb-2 flex items-center gap-3">
+            <button
+              id="btnDrillBack"
+              onclick="goBackOneLevel()"
+              class="hidden bg-gray-100 hover:bg-gray-200 p-2.5 rounded-xl text-gray-600 transition-all"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                ></path>
+              </svg>
+            </button>
+            <h1
+              id="inventoryBreadcrumb"
+              class="text-2xl font-extrabold text-brandtext tracking-tight"
+            >
+              Categories
+            </h1>
+          </div>
+
+          <!-- The Dynamic Grid (Where Categories, Subcategories, and Brands will appear) -->
+          <div id="drillDownGrid" class="px-5 grid grid-cols-2 gap-3 mt-2">
+            <!-- Javascript will inject the tiles here -->
+          </div>
+
+          <!-- The Product List (Hidden until the final level of the drill-down) -->
+          <div id="drillDownProductList" class="px-5 space-y-4 mt-2 hidden">
+            <!-- Javascript will inject the final product cards here -->
+          </div>
+        </div>
+        <!-- TAB 3: SALES HISTORY -->
+        <div id="tab-sales" class="hidden px-5">
+          <div class="mb-6">
+            <h2
+              class="text-[24px] font-bold tracking-tight text-brandtext leading-none"
+            >
+              Sales history
+            </h2>
+            <p class="text-[12px] text-gray-400 mt-1.5">
+              Review all completed transactions today.
+            </p>
+          </div>
+          <!-- DAILY & WEEKLY REVENUE DASHBOARD -->
+          <div class="flex gap-4 mb-6">
+            <div
+              class="flex-1 bg-emerald-50 rounded-2xl p-4 border border-emerald-100 shadow-sm"
+            >
+              <p
+                class="text-[11px] font-extrabold text-emerald-600 uppercase tracking-wider"
+              >
+                Today's Sales
+              </p>
+              <h2
+                id="metric-today"
+                class="text-[22px] font-black text-emerald-700 mt-1"
+              >
+                0 MAD
+              </h2>
+            </div>
+            <div
+              class="flex-1 bg-blue-50 rounded-2xl p-4 border border-blue-100 shadow-sm"
+            >
+              <p
+                class="text-[11px] font-extrabold text-blue-600 uppercase tracking-wider"
+              >
+                Last 7 Days
+              </p>
+              <h2
+                id="metric-week"
+                class="text-[22px] font-black text-blue-700 mt-1"
+              >
+                0 MAD
+              </h2>
+            </div>
+          </div>
+          <!-- Z-REPORT BUTTON -->
+          <div class="flex justify-end mb-6">
+            <button
+              onclick="generateZReport()"
+              class="bg-red-50 text-red-600 border border-red-200 font-bold px-4 py-2.5 rounded-xl text-[13px] hover:bg-red-500 hover:text-white transition-colors flex items-center gap-2 shadow-sm"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                ></path>
+              </svg>
+              Close Register (Z-Report)
+            </button>
+          </div>
+          <div
+            id="salesList"
+            class="bg-white rounded-[24px] border border-gray-100 shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] p-5 flex flex-col gap-4"
+          >
+            <div class="text-center py-8">
+              <svg
+                class="animate-spin h-6 w-6 text-brand mx-auto mb-3"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              <p class="text-gray-500 text-sm font-medium">Loading ledger...</p>
+            </div>
+          </div>
+        </div>
+        <!-- ============================== -->
+        <!-- PROFILE VIEW                   -->
+        <!-- ============================== -->
+        <div id="tab-profile" class="hidden pb-24">
+          <div class="px-5 pt-8 pb-4">
+            <h1
+              class="text-3xl font-extrabold text-brandtext tracking-tight mb-2"
+            >
+              Shift Profile
+            </h1>
+            <p class="text-[14px] text-gray-500 font-medium">
+              Manage your current session and access level.
+            </p>
+          </div>
+
+          <div class="px-5 space-y-4">
+            <!-- Status Card -->
+            <div
+              class="bg-white rounded-[24px] p-6 border border-gray-100 shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)]"
+            >
+              <div class="flex items-center gap-4 mb-6">
+                <div
+                  id="profileAvatar"
+                  class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center text-2xl transition-all"
+                >
+                  👤
+                </div>
+                <div>
+                  <h3
+                    id="profileRoleName"
+                    class="text-[18px] font-bold text-brandtext"
+                  >
+                    Cashier
+                  </h3>
+                  <p
+                    id="profileAccessLevel"
+                    class="text-[13px] text-gray-500 font-medium"
+                  >
+                    Standard Access
+                  </p>
+                </div>
+              </div>
+
+              <button
+                id="adminToggleButton"
+                onclick="adminLogin()"
+                class="w-full bg-gray-100 text-gray-700 font-bold py-3.5 rounded-xl text-[14px] hover:bg-gray-200 transition-all"
+              >
+                Unlock Admin Mode
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Bottom Navigation Bar -->
+      <nav
+        class="fixed bottom-0 w-full max-w-[400px] bg-white/95 backdrop-blur-md border-t border-gray-100 px-6 py-3 pb-8 flex justify-between items-center z-50"
+      >
+        <!-- Tab: Overview -->
+        <button
+          id="nav-overview"
+          onclick="switchTab('overview')"
+          class="flex flex-col items-center gap-1.5 w-16 text-brand transition-colors"
+        >
+          <div
+            id="icon-overview"
+            class="p-1 rounded-lg bg-cardGreenBg text-cardGreenIcon"
+          >
+            <svg
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
+              />
+            </svg>
+          </div>
+          <span id="text-overview" class="text-[10px] font-bold">Overview</span>
+        </button>
+
+        <!-- Tab: Inventory -->
+        <button
+          id="nav-inventory"
+          onclick="switchTab('inventory')"
+          class="flex flex-col items-center gap-1.5 w-16 text-gray-400 hover:text-brand transition-colors"
+        >
+          <div id="icon-inventory" class="p-1 rounded-lg">
+            <svg
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"
+              />
+            </svg>
+          </div>
+          <span id="text-inventory" class="text-[10px] font-medium"
+            >Inventory</span
+          >
+        </button>
+
+        <!-- Tab: Sales -->
+        <button
+          id="nav-sales"
+          onclick="switchTab('sales')"
+          class="flex flex-col items-center gap-1.5 w-16 text-gray-400 hover:text-brand transition-colors"
+        >
+          <div id="icon-sales" class="p-1 rounded-lg">
+            <svg
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <span id="text-sales" class="text-[10px] font-medium">Sales</span>
+        </button>
+
+        <!-- Tab: Profile -->
+        <button
+          id="nav-profile"
+          onclick="switchTab('profile')"
+          class="flex flex-col items-center gap-1.5 w-16 text-gray-400 hover:text-brand transition-colors"
+        >
+          <div id="icon-profile" class="p-1">
+            <svg
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+              />
+            </svg>
+          </div>
+          <span id="text-profile" class="text-[10px] font-medium">Profile</span>
+        </button>
+      </nav>
+    </div>
+    <!-- ============================== -->
+    <!-- ADMIN PIN MODAL                -->
+    <!-- ============================== -->
+    <div
+      id="pinModal"
+      class="hidden fixed inset-0 bg-brandtext/40 backdrop-blur-sm z-[100] flex items-center justify-center px-5"
+    >
+      <div
+        class="bg-white w-full max-w-[320px] rounded-[24px] p-6 shadow-2xl relative"
+      >
+        <h3 class="text-[18px] font-bold text-brandtext mb-1 text-center">
+          Manager Access
+        </h3>
+        <p class="text-[13px] text-gray-500 mb-5 text-center">
+          Enter PIN to unlock admin features
+        </p>
+
+        <input
+          type="password"
+          id="adminPinInput"
+          placeholder="••••"
+          maxlength="4"
+          class="w-full text-center tracking-[1em] bg-gray-50 border border-gray-200 rounded-xl px-4 py-4 text-[24px] font-bold text-brandtext focus:outline-none focus:border-blue-500 transition-all mb-2"
+        />
+
+        <p
+          id="pinErrorMsg"
+          class="hidden text-[12px] font-bold text-red-500 text-center mb-4"
+        >
+          Incorrect PIN. Try again.
+        </p>
+
+        <div class="mt-4 flex gap-3">
+          <button
+            onclick="closePinModal()"
+            class="flex-1 bg-white border border-gray-200 text-gray-600 font-bold py-3.5 rounded-xl text-[13px] hover:bg-gray-50 transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            onclick="submitPin()"
+            class="flex-1 bg-blue-500 text-white font-bold py-3.5 rounded-xl text-[13px] hover:bg-blue-600 transition-all shadow-md"
+          >
+            Unlock
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- ================================= -->
+    <!-- RESTOCK MODAL                     -->
+    <!-- ================================= -->
+    <div
+      id="restockModal"
+      class="hidden fixed inset-0 bg-brandtext/40 backdrop-blur-sm z-[150] flex items-center justify-center px-5"
+    >
+      <div
+        class="bg-white w-full max-w-[350px] rounded-[24px] p-6 shadow-2xl relative"
+      >
+        <div class="flex justify-between items-center mb-5">
+          <h3 class="text-[18px] font-bold text-[#059669]">Restock Item</h3>
+          <button
+            onclick="closeRestockModal()"
+            class="text-gray-400 hover:text-gray-600 font-bold text-xl"
+          >
+            &times;
+          </button>
+        </div>
+
+        <div class="mb-4">
+          <label
+            class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-2"
+            >Select Size</label
+          >
+          <select
+            id="restockSizeSelect"
+            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] font-bold focus:outline-none focus:border-[#059669]"
+          ></select>
+        </div>
+
+        <div class="mb-6">
+          <label
+            class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5"
+            >Quantity Arrived</label
+          >
+          <input
+            type="number"
+            id="restockQty"
+            value="1"
+            min="1"
+            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[18px] font-black focus:outline-none focus:border-[#059669]"
+          />
+        </div>
+
+        <div class="flex gap-3">
+          <button
+            onclick="closeRestockModal()"
+            class="flex-1 bg-gray-100 text-gray-600 font-bold py-3.5 rounded-xl text-[14px] hover:bg-gray-200 transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            onclick="submitRestock()"
+            class="flex-1 bg-[#059669] text-white font-bold py-3.5 rounded-xl text-[14px] hover:bg-[#047857] transition-all shadow-md"
+          >
+            Add Stock
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- ================================= -->
+    <!-- ADD ITEM MODAL (SMART TOGGLE)     -->
+    <!-- ================================= -->
+    <div
+      id="addProductModal"
+      class="hidden fixed inset-0 bg-brandtext/40 backdrop-blur-sm z-[100] flex items-center justify-center px-5"
+    >
+      <div
+        class="bg-white w-full max-w-[400px] rounded-[24px] p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto"
+      >
+        <div class="flex justify-between items-center mb-5">
+          <h3 class="text-[18px] font-bold text-brandtext">Add New Item</h3>
+          <button
+            onclick="closeAddProductModal()"
+            class="text-gray-400 hover:text-gray-600 font-bold text-xl"
+          >
+            &times;
+          </button>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Image Upload -->
+          <div>
+            <label
+              class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5"
+              >Product Picture</label
+            >
+            <input
+              type="file"
+              id="addImageFile"
+              accept="image/*"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-[14px] font-semibold focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[12px] file:font-bold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 transition-all cursor-pointer"
+            />
+          </div>
+
+          <!-- Product Name -->
+          <div>
+            <label
+              class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5"
+              >Product Name</label
+            >
+            <input
+              type="text"
+              id="addName"
+              placeholder="e.g. Tabby Shoulder Bag"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] font-semibold focus:outline-none focus:border-blue-500"
+            />
+          </div>
+
+          <!-- Color -->
+          <div>
+            <label
+              class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5"
+              >Color</label
+            >
+            <input
+              type="text"
+              id="addColor"
+              placeholder="e.g. Black"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] font-semibold focus:outline-none"
+            />
+          </div>
+
+          <!-- THE SMART TOGGLE -->
+          <div
+            class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-200"
+          >
+            <label class="text-[12px] font-bold text-gray-700"
+              >Does this item have sizes?</label
+            >
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                id="hasSizesToggle"
+                class="sr-only peer"
+                onchange="toggleSizeUI()"
+              />
+              <div
+                class="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-500"
+              ></div>
+            </label>
+          </div>
+
+          <!-- DEFAULT: SIMPLE QUANTITY (For Bags) -->
+          <div id="simpleQtyContainer">
+            <label
+              class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5"
+              >Total Quantity</label
+            >
+            <input
+              type="number"
+              id="addStock"
+              value="1"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] font-semibold focus:outline-none"
+            />
+          </div>
+
+          <!-- HIDDEN: MASTER SIZE BOARD (Sizes 1-18) -->
+          <div
+            id="sizeBoardContainer"
+            class="hidden bg-blue-50/50 p-4 rounded-xl border border-blue-100"
+          >
+            <label
+              class="block text-[11px] font-bold text-blue-800 uppercase tracking-wide mb-2"
+              >Children's Sizes (1-18)</label
+            >
+            <div id="sizeGrid" class="grid grid-cols-4 md:grid-cols-6 gap-2">
+              <!-- JavaScript will inject sizes 1-18 here automatically -->
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label
+              class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5"
+              >Description</label
+            >
+            <textarea
+              id="addDesc"
+              placeholder="Premium leather finish..."
+              rows="2"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] font-semibold focus:outline-none focus:border-blue-500"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <button
+            onclick="closeAddProductModal()"
+            class="flex-1 bg-gray-100 text-gray-600 font-bold py-3.5 rounded-xl text-[14px] hover:bg-gray-200 transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            onclick="submitNewProduct()"
+            class="flex-1 bg-blue-500 text-white font-bold py-3.5 rounded-xl text-[14px] hover:bg-blue-600 transition-all shadow-md"
+          >
+            Save Item
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- ============================== -->
+    <!-- ADD CATEGORY MODAL (CUSTOM UI) -->
+    <!-- ============================== -->
+    <div
+      id="addCategoryModal"
+      class="hidden fixed inset-0 bg-brandtext/40 backdrop-blur-sm z-[100] flex items-center justify-center px-5"
+    >
+      <div
+        class="bg-white w-full max-w-[400px] rounded-[24px] p-6 shadow-2xl relative"
+      >
+        <div class="flex justify-between items-center mb-5">
+          <h3 class="text-[18px] font-bold text-brandtext">Add New Category</h3>
+          <button
+            onclick="closeAddCategoryModal()"
+            class="text-gray-400 hover:text-gray-600 font-bold text-xl"
+          >
+            &times;
+          </button>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label
+              class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5"
+              >Category Name</label
+            >
+            <input
+              type="text"
+              id="newCatName"
+              placeholder="e.g. Sunglasses"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] font-semibold focus:outline-none focus:border-blue-500"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5"
+              >Icon / Emoji</label
+            >
+            <input
+              type="text"
+              id="newCatIcon"
+              placeholder="e.g. 🕶️"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] font-semibold focus:outline-none focus:border-blue-500"
+            />
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <button
+            onclick="closeAddCategoryModal()"
+            class="flex-1 bg-gray-100 text-gray-600 font-bold py-3.5 rounded-xl text-[14px] hover:bg-gray-200 transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            onclick="saveNewCategory()"
+            class="flex-1 bg-blue-500 text-white font-bold py-3.5 rounded-xl text-[14px] hover:bg-blue-600 transition-all shadow-md"
+          >
+            Add Category
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- ================================= -->
+    <!-- ADD SUBCATEGORY MODAL (CUSTOM UI) -->
+    <!-- ================================= -->
+    <div
+      id="addSubcategoryModal"
+      class="hidden fixed inset-0 bg-brandtext/40 backdrop-blur-sm z-[100] flex items-center justify-center px-5"
+    >
+      <div
+        class="bg-white w-full max-w-[400px] rounded-[24px] p-6 shadow-2xl relative"
+      >
+        <div class="flex justify-between items-center mb-5">
+          <h3 id="addSubCatTitle" class="text-[18px] font-bold text-brandtext">
+            Add Subcategory
+          </h3>
+          <button
+            onclick="closeAddSubcategoryModal()"
+            class="text-gray-400 hover:text-gray-600 font-bold text-xl"
+          >
+            &times;
+          </button>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label
+              class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5"
+              >Subcategory Name</label
+            >
+            <input
+              type="text"
+              id="newSubCatName"
+              placeholder="e.g. Gym Bags"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] font-semibold focus:outline-none focus:border-blue-500"
+            />
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <button
+            onclick="closeAddSubcategoryModal()"
+            class="flex-1 bg-gray-100 text-gray-600 font-bold py-3.5 rounded-xl text-[14px] hover:bg-gray-200 transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            onclick="saveNewSubcategory()"
+            class="flex-1 bg-blue-500 text-white font-bold py-3.5 rounded-xl text-[14px] hover:bg-blue-600 transition-all shadow-md"
+          >
+            Add Subcategory
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- ================================= -->
+    <!-- DELETE CONFIRMATION MODAL         -->
+    <!-- ================================= -->
+    <div
+      id="deleteConfirmModal"
+      class="hidden fixed inset-0 bg-brandtext/40 backdrop-blur-sm z-[150] flex items-center justify-center px-5"
+    >
+      <div
+        class="bg-white w-full max-w-[350px] rounded-[24px] p-6 shadow-2xl relative text-center"
+      >
+        <!-- Danger Icon -->
+        <div
+          class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl border-4 border-white shadow-sm"
+        >
+          🗑️
+        </div>
+
+        <h3 class="text-[18px] font-bold text-brandtext mb-2">
+          Delete Category?
+        </h3>
+        <p class="text-[13px] text-gray-500 font-medium mb-6 leading-relaxed">
+          Are you sure you want to delete
+          <span
+            id="deleteTargetName"
+            class="font-extrabold text-gray-700"
+          ></span
+          >?<br />This action cannot be undone.
+        </p>
+
+        <div class="flex gap-3">
+          <button
+            onclick="closeDeleteModal()"
+            class="flex-1 bg-gray-100 text-gray-600 font-bold py-3.5 rounded-xl text-[14px] hover:bg-gray-200 transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            onclick="confirmDeleteFolder()"
+            class="flex-1 bg-red-500 text-white font-bold py-3.5 rounded-xl text-[14px] hover:bg-red-600 transition-all shadow-md"
+          >
+            Yes, Delete
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- ================================= -->
+    <!-- DELETE PRODUCT MODAL              -->
+    <!-- ================================= -->
+    <div
+      id="deleteProductModal"
+      class="hidden fixed inset-0 bg-brandtext/40 backdrop-blur-sm z-[150] flex items-center justify-center px-5"
+    >
+      <div
+        class="bg-white w-full max-w-[350px] rounded-[24px] p-6 shadow-2xl relative text-center"
+      >
+        <div
+          class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl border-4 border-white shadow-sm"
+        >
+          🗑️
+        </div>
+        <h3 class="text-[18px] font-bold text-brandtext mb-2">Delete Item?</h3>
+        <p class="text-[13px] text-gray-500 font-medium mb-6 leading-relaxed">
+          Are you sure you want to delete
+          <span
+            id="deleteProductName"
+            class="font-extrabold text-gray-700"
+          ></span
+          >?<br />This action cannot be undone.
+        </p>
+        <div class="flex gap-3">
+          <button
+            onclick="closeDeleteProductModal()"
+            class="flex-1 bg-gray-100 text-gray-600 font-bold py-3.5 rounded-xl text-[14px] hover:bg-gray-200 transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            onclick="confirmDeleteProduct()"
+            class="flex-1 bg-red-500 text-white font-bold py-3.5 rounded-xl text-[14px] hover:bg-red-600 transition-all shadow-md"
+          >
+            Yes, Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================= -->
+    <!-- CLEAN RECORD SALE MODAL           -->
+    <!-- ================================= -->
+    <div
+      id="sellModal"
+      class="hidden fixed inset-0 bg-brandtext/40 backdrop-blur-sm z-[200] flex items-center justify-center px-5"
+    >
+      <div
+        class="bg-white w-full max-w-[400px] rounded-[24px] p-6 shadow-2xl relative"
+      >
+        <h3 class="text-[20px] font-black text-brandtext mb-1">Record Sale</h3>
+        <p
+          id="sellModalTitle"
+          class="text-[14px] text-gray-500 font-medium mb-6"
+        >
+          Product Name
+        </p>
+
+        <!-- Selling Price Input -->
+        <div class="mb-5">
+          <label
+            class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-1.5"
+            >Final Selling Price (MAD)</label
+          >
+          <input
+            type="number"
+            id="sellPrice"
+            placeholder="e.g. 150"
+            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[18px] font-black text-brandtext focus:outline-none focus:border-[#22332c] transition-all"
+          />
+        </div>
+
+        <!-- Size Selector -->
+        <div id="sellSizeSelector" class="mb-8">
+          <label
+            class="block text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-2"
+            >Size</label
+          >
+          <div id="sellSizesGrid" class="flex flex-wrap gap-2">
+            <!-- JS injects the buttons here -->
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3">
+          <button
+            onclick="closeSellModal()"
+            class="flex-1 bg-white border border-gray-200 text-gray-600 font-bold py-3.5 rounded-xl text-[14px] hover:bg-gray-50 transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            onclick="confirmSale()"
+            class="flex-[1.5] bg-[#22332c] text-white font-bold py-3.5 rounded-xl text-[14px] hover:bg-black transition-all shadow-md"
+          >
+            Confirm Sale
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- ================================= -->
+    <!-- FLOATING CART BUTTON              -->
+    <!-- ================================= -->
+    <div
+      id="floatingCartBtn"
+      class="hidden fixed bottom-[90px] left-1/2 -translate-x-1/2 w-[95%] max-w-[400px] z-[120]"
+    >
+      <button
+        onclick="openCartModal()"
+        class="w-full bg-[#111827] text-white font-black py-4 rounded-2xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.3)] flex justify-between items-center px-6 border border-gray-700 hover:bg-black transition-all"
+      >
+        <span
+          id="cartItemCount"
+          class="bg-white text-black text-[12px] px-3 py-1 rounded-full shadow-sm"
+          >0 Items</span
+        >
+        <span class="tracking-widest text-[13px] opacity-90">VIEW CART</span>
+        <span id="cartTotalDisplay" class="text-[16px] text-[#10b981]"
+          >0 MAD</span
+        >
+      </button>
+    </div>
+
+    <!-- ================================= -->
+    <!-- CART SUMMARY MODAL                -->
+    <!-- ================================= -->
+    <div
+      id="cartModal"
+      class="hidden fixed inset-0 bg-brandtext/50 backdrop-blur-sm z-[200] flex items-end sm:items-center justify-center sm:px-5"
+    >
+      <div
+        class="bg-white w-full h-[85vh] sm:h-auto sm:max-h-[85vh] sm:max-w-[450px] rounded-t-[30px] sm:rounded-[24px] shadow-2xl relative flex flex-col overflow-hidden animate-slide-up"
+      >
+        <!-- Header -->
+        <div
+          class="p-6 border-b border-gray-100 flex justify-between items-center shrink-0 bg-white"
+        >
+          <h3 class="text-[20px] font-black text-brandtext">Shopping Cart</h3>
+          <button
+            onclick="closeCartModal()"
+            class="bg-gray-100 w-8 h-8 rounded-full text-gray-500 font-bold hover:bg-gray-200 transition-all flex items-center justify-center"
+          >
+            &times;
+          </button>
+        </div>
+
+        <!-- Cart Items List -->
+        <div
+          id="cartItemsContainer"
+          class="flex-1 overflow-y-auto p-6 space-y-3 bg-gray-50/50"
+        >
+          <!-- Items injected here via Javascript -->
+        </div>
+
+        <!-- Footer / Checkout -->
+        <div class="p-6 border-t border-gray-100 bg-white shrink-0">
+          <div class="flex justify-between items-center mb-5">
+            <span
+              class="text-[13px] font-bold text-gray-400 uppercase tracking-widest"
+              >Total Amount</span
+            >
+            <span
+              id="cartGrandTotal"
+              class="text-[26px] font-black text-[#059669]"
+              >0 MAD</span
+            >
+          </div>
+          <button
+            onclick="processBulkCheckout()"
+            class="w-full bg-[#059669] text-white font-black py-4.5 rounded-[16px] text-[15px] hover:bg-[#047857] transition-all shadow-lg active:scale-[0.98]"
+          >
+            PROCESS CHECKOUT
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLEEK TOAST NOTIFICATION -->
+    <div
+      id="toastNotification"
+      class="fixed top-5 left-1/2 -translate-x-1/2 bg-[#22332c] text-white px-6 py-3 rounded-full shadow-2xl z-[300] flex items-center gap-3 transform -translate-y-20 opacity-0 transition-all duration-300 pointer-events-none"
+    >
+      <span class="text-[#10b981] font-black">✓</span>
+      <span id="toastMsg" class="text-[13px] font-bold tracking-wide"
+        >Success</span
+      >
+    </div>
+
+    <!-- ================================= -->
+    <!-- SIZE BREAKDOWN MODAL              -->
+    <!-- ================================= -->
+    <div
+      id="sizeInfoModal"
+      class="hidden fixed inset-0 bg-brandtext/40 backdrop-blur-sm z-[250] flex items-center justify-center px-5"
+    >
+      <div
+        class="bg-white w-full max-w-[300px] rounded-[24px] p-6 shadow-2xl relative"
+      >
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-[16px] font-black text-brandtext">Stock Breakdown</h3>
+          <button
+            onclick="
+              document.getElementById('sizeInfoModal').classList.add('hidden')
+            "
+            class="text-gray-400 hover:text-gray-600 font-bold text-xl"
+          >
+            &times;
+          </button>
+        </div>
+        <div id="sizeInfoList" class="space-y-2">
+          <!-- JavaScript will inject the sizes here -->
+        </div>
+      </div>
+    </div>
+    <!-- ================================= -->
+    <!-- EDIT PRODUCT MODAL (ADMIN ONLY)   -->
+    <!-- ================================= -->
+    <div
+      id="editProductModal"
+      class="hidden fixed inset-0 bg-brandtext/40 backdrop-blur-sm z-[250] flex items-center justify-center px-5"
+    >
+      <div
+        class="bg-white w-full max-w-[350px] rounded-[24px] p-6 shadow-2xl relative"
+      >
+        <h3 class="text-[18px] font-black text-brandtext mb-4">Edit Product</h3>
+
+        <!-- Hidden ID tracker -->
+        <input type="hidden" id="editProductId" />
+
+        <div class="space-y-3">
+          <div>
+            <label class="text-[11px] font-bold text-gray-500 uppercase"
+              >Product Name</label
+            >
+            <input
+              type="text"
+              id="editName"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[14px] font-bold focus:border-blue-400 outline-none"
+            />
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-gray-500 uppercase"
+              >Color / Edition</label
+            >
+            <input
+              type="text"
+              id="editColor"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[14px] font-bold focus:border-blue-400 outline-none"
+            />
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-gray-500 uppercase"
+              >Description</label
+            >
+            <textarea
+              id="editDesc"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[14px] font-medium focus:border-blue-400 outline-none h-16 resize-none"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-5">
+          <button
+            onclick="closeEditProductModal()"
+            class="flex-1 bg-gray-100 text-gray-600 font-bold py-3 rounded-xl text-[13px] hover:bg-gray-200"
+          >
+            Cancel
+          </button>
+          <button
+            onclick="submitEditProduct()"
+            class="flex-[1.5] bg-blue-600 text-white font-bold py-3 rounded-xl text-[13px] hover:bg-blue-700 shadow-md"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- LEDGER QUICK-VIEW MODAL -->
+    <div
+      id="ledgerProductModal"
+      class="fixed inset-0 bg-black/40 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm opacity-0 transition-opacity duration-300"
+    >
+      <div
+        class="bg-white rounded-[24px] w-full max-w-sm overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 p-6 border border-gray-100"
+      >
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-lg font-black text-brandtext">Product Details</h3>
+          <button
+            onclick="closeLedgerModal()"
+            class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full text-gray-600 transition-colors"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <div id="ledgerModalContent" class="text-center pt-4">
+          <!-- JavaScript will inject the product photo and stock here -->
+        </div>
+      </div>
+    </div>
+
+    <!--START OF THE SCRIPT-->
+    <script>
+      const API_URL = "http://192.168.11.147:5000";
+      let allProducts = [];
+      let currentGroupedProducts = [];
+      let activeProductGroup = null;
+      let selectedVariantIdForSale = null;
+      let currentCategoryFilter = "All";
+      // --- ADD THESE LINES RIGHT HERE ---
+      let isAdmin = false;
+      const ADMIN_PIN = "1976"; // You and your dad's secret PIN
+      // --- DRILL DOWN ARCHITECTURE ---
+
+      // The exact main categories you defined
+      let mainCategories = [];
+      let inventoryTree = {};
+      // --- MODAL LOGIC FOR SUBCATEGORIES ---
+      function openAddSubcategoryModal(categoryName) {
+        document.getElementById("addSubCatTitle").innerText =
+          `Add to ${categoryName}`;
+        document.getElementById("newSubCatName").value = "";
+        document
+          .getElementById("addSubcategoryModal")
+          .classList.remove("hidden");
+      }
+      function closeAddSubcategoryModal() {
+        document.getElementById("addSubcategoryModal").classList.add("hidden");
+      }
+
+      // --- DYNAMIC DATABASE TREE BUILDER ---
+      async function loadLiveCategories() {
+        try {
+          const response = await fetch(`${API_URL}/api/categories`);
+          const data = await response.json();
+
+          mainCategories = [];
+          inventoryTree = {};
+
+          // Use c.icon from the database, or default to 📦 if it's missing
+          data
+            .filter((c) => !c.parent_folder)
+            .forEach((c) => {
+              mainCategories.push({
+                name: c.category_name,
+                icon: c.icon || "📦",
+              });
+              inventoryTree[c.category_name] = {};
+            });
+
+          const subFolders = data.filter((c) => c.parent_folder);
+          subFolders.sort(
+            (a, b) => a.parent_folder.length - b.parent_folder.length,
+          );
+
+          subFolders.forEach((sub) => {
+            const path = sub.parent_folder.split("|");
+            let currentNode = inventoryTree;
+
+            path.forEach((folder) => {
+              if (!currentNode[folder]) currentNode[folder] = {};
+              currentNode = currentNode[folder];
+            });
+
+            currentNode[sub.category_name] = {};
+          });
+
+          renderCurrentLevel();
+        } catch (err) {
+          console.error("Error loading categories:", err);
+        }
+      }
+
+      // --- SAVE MAIN CATEGORY ---
+      async function saveNewCategory() {
+        const newCatName = document.getElementById("newCatName").value.trim();
+        // Grab the emoji from the input field
+        const newCatIcon =
+          document.getElementById("newCatIcon").value.trim() || "📦";
+
+        if (!newCatName) return;
+
+        try {
+          await fetch(`${API_URL}/api/categories`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            // Send the icon to the backend
+            body: JSON.stringify({
+              name: newCatName,
+              parent_folder: null,
+              icon: newCatIcon,
+            }),
+          });
+
+          closeAddCategoryModal();
+          loadLiveCategories();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+      // --- SAVE SUBCATEGORY / BRAND ---
+      async function saveNewSubcategory() {
+        const newSubName = document
+          .getElementById("newSubCatName")
+          .value.trim();
+        if (!newSubName) return;
+
+        // Join the path with a | so MySQL knows exactly how deep this goes
+        const parentPath = currentDrillPath.join("|");
+
+        try {
+          await fetch(`${API_URL}/api/categories`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: newSubName,
+              parent_folder: parentPath,
+            }),
+          });
+
+          closeAddSubcategoryModal();
+          loadLiveCategories(); // Fetch fresh from DB and redraw!
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      // Variables to remember what we are trying to delete
+      let folderToDelete = null;
+      let parentPathToDelete = null;
+
+      // 1. Triggered when you click the red 'X' on a tile
+      function deleteFolder(folderName, parentPath, event) {
+        event.stopPropagation(); // Stops the folder from opening
+
+        folderToDelete = folderName;
+        parentPathToDelete = parentPath;
+
+        // Update the text inside the modal and show it
+        document.getElementById("deleteTargetName").innerText =
+          `"${folderName}"`;
+        document
+          .getElementById("deleteConfirmModal")
+          .classList.remove("hidden");
+      }
+
+      // 2. Cancel button logic
+      function closeDeleteModal() {
+        document.getElementById("deleteConfirmModal").classList.add("hidden");
+        folderToDelete = null;
+        parentPathToDelete = null;
+      }
+
+      // 3. Confirm Delete button logic
+      async function confirmDeleteFolder() {
+        if (!folderToDelete) return;
+
+        try {
+          // Tell the backend to delete it
+          await fetch(`${API_URL}/api/categories`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: folderToDelete,
+              parent_folder: parentPathToDelete,
+            }),
+          });
+
+          // Hide modal and redraw screen instantly
+          closeDeleteModal();
+          loadLiveCategories();
+        } catch (err) {
+          console.error(err);
+          alert("Error deleting folder.");
+        }
+      }
+      // Array to remember the path: e.g., ["Bags", "Women-Hand-bags", "Coach"]
+      let currentDrillPath = [];
+
+      // 1. Render the main categories (Level 1)
+      function renderLevel1Categories() {
+        currentDrillPath = []; // Reset path
+
+        document.getElementById("inventoryBreadcrumb").innerText = "Categories";
+        document.getElementById("btnDrillBack").classList.add("hidden");
+        document.getElementById("drillDownProductList").classList.add("hidden");
+
+        const grid = document.getElementById("drillDownGrid");
+        grid.classList.remove("hidden");
+
+        // Draw the standard category tiles WITH a Delete button for Admins
+        let tilesHtml = mainCategories
+          .map(
+            (cat) => `
+          <div class="relative w-full h-full">
+            <button onclick="handleTileClick('${cat.name}', ${cat.isCustom || false})" class="w-full h-full bg-white border border-gray-100 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:shadow-md hover:border-blue-200 transition-all shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
+              <span class="text-4xl">${cat.icon}</span>
+              <span class="text-[12px] font-extrabold text-gray-700 uppercase tracking-widest text-center">${cat.name}</span>
+            </button>
+            
+            ${
+              isAdmin
+                ? `
+              <button onclick="deleteFolder('${cat.name}', null, event)" class="absolute -top-2 -right-2 bg-red-50 text-red-500 w-8 h-8 rounded-full flex items-center justify-center border-2 border-white hover:bg-red-500 hover:text-white transition-all shadow-md font-bold z-10 cursor-pointer">
+                &times;
+              </button>
+            `
+                : ""
+            }
+          </div>
+        `,
+          )
+          .join("");
+
+        // Inject the "+" button ONLY if Admin Mode is active
+        if (isAdmin) {
+          tilesHtml += `
+            <button onclick="addNewCategory()" class="bg-blue-50 border-2 border-blue-200 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:bg-blue-100 transition-all">
+              <span class="text-4xl text-blue-400">+</span>
+              <span class="text-[12px] font-extrabold text-blue-500 uppercase tracking-widest text-center">Add Category</span>
+            </button>
+          `;
+        }
+
+        grid.innerHTML = tilesHtml;
+      }
+      // Opens the nice custom modal instead of the basic browser prompt
+      function addNewCategory() {
+        document.getElementById("newCatName").value = "";
+        document.getElementById("newCatIcon").value = "";
+        document.getElementById("addCategoryModal").classList.remove("hidden");
+      }
+
+      function closeAddCategoryModal() {
+        document.getElementById("addCategoryModal").classList.add("hidden");
+      }
+
+      // 3. Update the Header UI
+      function updateBreadcrumbUI() {
+        const headerText =
+          currentDrillPath.length === 0
+            ? "Categories"
+            : currentDrillPath[currentDrillPath.length - 1];
+        document.getElementById("inventoryBreadcrumb").innerText = headerText;
+
+        const backBtn = document.getElementById("btnDrillBack");
+        if (currentDrillPath.length > 0) {
+          backBtn.classList.remove("hidden");
+        } else {
+          backBtn.classList.add("hidden");
+        }
+      }
+
+      // 4. The Back Button Logic
+      function goBackOneLevel() {
+        currentDrillPath.pop(); // Remove current level
+
+        if (currentDrillPath.length === 0) {
+          renderLevel1Categories();
+        } else if (currentDrillPath.length === 1) {
+          renderLevel2Subcategories(currentDrillPath[0]);
+        } else if (currentDrillPath.length === 2) {
+          renderLevel3Brands(currentDrillPath[1]);
+        }
+      }
+
+      // 2. The Smart Click Handler
+      function handleTileClick(tileName, isCustom) {
+        if (isCustom) {
+          alert("Opening manual price entry for Random Stuff...");
+          return;
+        }
+
+        currentDrillPath.push(tileName);
+        renderCurrentLevel();
+      }
+
+      // 3. The Flawless Level Renderer
+      async function renderCurrentLevel() {
+        updateBreadcrumbUI();
+        if (currentDrillPath.length === 0) {
+          renderLevel1Categories();
+          return;
+        }
+
+        let currentNode = inventoryTree;
+        for (let i = 0; i < currentDrillPath.length; i++) {
+          currentNode = currentNode[currentDrillPath[i]];
+        }
+
+        const grid = document.getElementById("drillDownGrid");
+        const productList = document.getElementById("drillDownProductList");
+        const currentFolderName = currentDrillPath[currentDrillPath.length - 1];
+        const currentPathStr = currentDrillPath.join("|");
+
+        // --- DRAW FOLDERS ---
+        let items = Object.keys(currentNode || {});
+
+        // FIX: Secure the current path string against quotes too!
+        const safePathStr = currentPathStr
+          .replace(/'/g, "\\'")
+          .replace(/"/g, "&quot;");
+
+        let tilesHtml = items
+          .map((item) => {
+            // FIX: Clean the apostrophes in folder names (like MEN'S) so it doesn't break the button!
+            const safeItem = item.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
+            return `
+          <!-- NOTICE THE 'searchable-folder' CLASS ADDED HERE -->
+          <div class="relative w-full h-full searchable-folder">
+            <button onclick="handleTileClick('${safeItem}', false)" class="w-full h-full bg-white border border-gray-100 rounded-2xl p-5 flex items-center justify-center hover:shadow-md hover:border-blue-200 transition-all shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
+              <span class="text-[12px] font-extrabold text-gray-700 uppercase tracking-widest text-center">${item.replace(/-/g, " ")}</span>
+            </button>
+            ${isAdmin ? `<button onclick="deleteFolder('${safeItem}', '${safePathStr}', event)" class="absolute -top-2 -right-2 bg-red-50 text-red-500 w-8 h-8 rounded-full flex items-center justify-center border-2 border-white hover:bg-red-500 hover:text-white transition-all shadow-md font-bold z-10 cursor-pointer">&times;</button>` : ""}
+          </div>
+        `;
+          })
+          .join("");
+
+        // SMART FIX: Hide "Add Folder" if we are deep in a Brand (Level 3+)
+        let isBrandLevel = currentDrillPath.length >= 3;
+        if (isAdmin && !isBrandLevel) {
+          // FIX: Escape the folder name so MEN'S doesn't break the button!
+          const safeFolderName = currentFolderName
+            .replace(/'/g, "\\'")
+            .replace(/"/g, "&quot;");
+
+          tilesHtml += `
+            <button onclick="openAddSubcategoryModal('${safeFolderName}')" class="bg-gray-50 border-2 border-gray-200 border-dashed rounded-2xl p-5 flex flex-col items-center justify-center gap-2 hover:bg-gray-100 transition-all">
+              <span class="text-3xl text-gray-400">+</span>
+              <span class="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest text-center">ADD FOLDER</span>
+            </button>
+          `;
+        }
+
+        // Hide the folder grid completely if there are no folders to show
+        if (tilesHtml === "") {
+          grid.classList.add("hidden");
+        } else {
+          grid.innerHTML = tilesHtml;
+          grid.classList.remove("hidden");
+        }
+
+        // --- FETCH & DRAW PRODUCTS ---
+        productList.classList.remove("hidden");
+        try {
+          const response = await fetch(
+            `${API_URL}/api/products?folderPath=${encodeURIComponent(currentPathStr)}`,
+          );
+          const products = await response.json();
+
+          // THE DASHED "ADD ITEM" TILE (Sits inside the 2-column grid!)
+          // THE DASHED "ADD ITEM" TILE (Sits inside the 2-column grid!)
+          let addItemTile = "";
+          if (isAdmin && isBrandLevel) {
+            // FIX: Escape the path string so adding a product inside MEN'S works perfectly too!
+            const safePathForProduct = currentPathStr
+              .replace(/'/g, "\\'")
+              .replace(/"/g, "&quot;");
+
+            addItemTile = `
+              <button onclick="openAddProductModal('${safePathForProduct}')" class="bg-blue-50 border-2 border-blue-200 border-dashed rounded-[20px] flex flex-col items-center justify-center gap-2 hover:bg-blue-100 transition-all min-h-[250px] shadow-sm">
+                <span class="text-4xl text-blue-400">+</span>
+                <span class="text-[12px] font-extrabold text-blue-500 uppercase tracking-widest text-center">ADD ITEM</span>
+              </button>
+            `;
+          }
+
+          let cardsHtml = products
+            .map((prod) => {
+              const safeName = prod.product_name
+                .replace(/'/g, "\\'")
+                .replace(/"/g, "&quot;");
+              const safeSizes = (prod.sizes || "{}")
+                .replace(/'/g, "\\'")
+                .replace(/"/g, "&quot;");
+
+              return `
+            <!-- FIX: Removed the opacity-50 from the main wrapper so buttons stay alive -->
+            <div class="bg-white border border-gray-100 rounded-[20px] shadow-sm overflow-hidden flex flex-col relative searchable-product">
+              
+              ${
+                typeof isAdmin !== "undefined" && isAdmin
+                  ? `
+                <!-- Grouped the Edit and Delete buttons in the top right -->
+                <div class="absolute top-2 right-2 flex gap-1.5 z-10">
+                  <button onclick="openEditProductModal(${prod.id}, '${safeName}', '${(prod.color || "").replace(/'/g, "\\'")}', '${(prod.description || "").replace(/'/g, "\\'")}')" class="bg-blue-50 text-blue-500 w-8 h-8 rounded-full flex items-center justify-center border-2 border-white hover:bg-blue-500 hover:text-white transition-all shadow-md text-sm cursor-pointer">
+                    ✏️
+                  </button>
+                  <button onclick="triggerDeleteProduct(${prod.id}, '${safeName}')" class="bg-red-50 text-red-500 w-8 h-8 rounded-full flex items-center justify-center border-2 border-white hover:bg-red-500 hover:text-white transition-all shadow-md font-bold cursor-pointer">
+                    &times;
+                  </button>
+                </div>
+              `
+                  : ""
+              }
+
+              <!-- FIX: Moved the fade-out effect directly to the image -->
+              <div class="h-[140px] bg-gray-50 w-full relative ${prod.stock_quantity <= 0 ? "opacity-40 grayscale-[80%]" : ""}">
+                <img src="${prod.image_url ? (prod.image_url.startsWith("http") ? prod.image_url : API_URL + prod.image_url) : "https://via.placeholder.com/300x300?text=Bag+Image"}" alt="${safeName}" class="w-full h-full object-cover" />
+              </div>
+              
+              <div class="p-4 flex flex-col flex-1">
+                <h4 class="text-[15px] font-black text-gray-800 leading-tight mb-1 ${prod.stock_quantity <= 0 ? "text-gray-400" : ""}">${prod.product_name}</h4>
+                <p class="text-[11px] font-medium text-gray-400 line-clamp-2 mb-3">${prod.description || "No description"}</p>
+                
+                <div class="flex justify-between items-center mb-4">
+                  <span class="text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-1 rounded border border-gray-200 uppercase">${prod.color || "STANDARD"}</span>
+                  
+                  <!-- WE CHANGED THIS FROM A SPAN TO A CLICKABLE BUTTON -->
+                  <button onclick="showStockInfo('${safeSizes}')" class="text-[12px] font-black hover:opacity-70 transition-all ${prod.stock_quantity > 0 ? "text-blue-600" : "text-red-500"}">
+                    ${prod.stock_quantity > 0 ? `${prod.stock_quantity} IN STOCK` : "OUT OF STOCK"}
+                  </button>
+                </div>
+                
+                <div class="mt-auto flex flex-col gap-2">
+                  <button ${prod.stock_quantity <= 0 ? "disabled" : ""} onclick="openSellModal(${prod.id}, '${safeName}', '${safeSizes}')" class="w-full ${prod.stock_quantity > 0 ? "bg-black text-white hover:bg-gray-800" : "bg-gray-100 text-gray-300 cursor-not-allowed"} font-bold py-3 rounded-xl text-[13px] shadow-sm transition-all">
+                    Add to Cart
+                  </button>
+                  ${
+                    typeof isAdmin !== "undefined" && isAdmin
+                      ? `
+                    <button onclick="openRestockModal(${prod.id}, '${safeSizes}')" class="w-full bg-green-50 border border-green-200 text-green-700 font-bold py-2.5 rounded-xl text-[12px] hover:bg-green-100 transition-all">
+                      Restock Item
+                    </button>
+                  `
+                      : ""
+                  }
+                </div>
+              </div>
+            </div>
+          `;
+            })
+            .join("");
+
+          productList.innerHTML = `<div class="grid grid-cols-2 gap-3 pb-6">${addItemTile}${cardsHtml}</div>`;
+        } catch (err) {
+          console.error("Error fetching products:", err);
+        }
+      }
+      // --- ADD SIZES TO FORM ---
+      function addSizeRow() {
+        const container = document.getElementById("sizeInputsContainer");
+        const row = document.createElement("div");
+        row.className = "flex gap-2 size-row";
+        row.innerHTML = `
+          <input type="text" placeholder="e.g. Adult L" class="size-name flex-1 bg-white border border-blue-200 rounded-lg px-3 py-2 text-[13px] font-bold focus:outline-none" />
+          <input type="number" placeholder="Qty" value="1" class="size-qty w-20 bg-white border border-blue-200 rounded-lg px-3 py-2 text-[13px] font-bold focus:outline-none text-center" />
+          <button type="button" onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-600 font-bold px-2">&times;</button>
+        `;
+        container.appendChild(row);
+      }
+
+      // --- TOGGLE UI FUNCTION ---
+      function toggleSizeUI() {
+        const hasSizes = document.getElementById("hasSizesToggle").checked;
+        if (hasSizes) {
+          document.getElementById("simpleQtyContainer").classList.add("hidden");
+          document
+            .getElementById("sizeBoardContainer")
+            .classList.remove("hidden");
+        } else {
+          document
+            .getElementById("simpleQtyContainer")
+            .classList.remove("hidden");
+          document.getElementById("sizeBoardContainer").classList.add("hidden");
+        }
+      }
+
+      // --- SEARCH BAR LOGIC ---
+      document
+        .querySelector('input[placeholder*="Search"]')
+        .addEventListener("input", function (e) {
+          const query = e.target.value.toLowerCase();
+
+          // Search Folders
+          document
+            .querySelectorAll("#drillDownGrid .searchable-folder")
+            .forEach((tile) => {
+              const text = tile.innerText.toLowerCase();
+              tile.style.display = text.includes(query) ? "block" : "none";
+            });
+
+          // Search Product Cards
+          document.querySelectorAll(".searchable-product").forEach((card) => {
+            const text = card.innerText.toLowerCase();
+            card.style.display = text.includes(query) ? "flex" : "none";
+          });
+        });
+
+      // --- ADD PRODUCT LOGIC (1-18 GRID) ---
+      function openAddProductModal(folderPath) {
+        targetFolderForProduct = folderPath;
+        document.getElementById("addProductModal").classList.remove("hidden");
+
+        // Reset inputs
+        document.getElementById("addName").value = "";
+        document.getElementById("addStock").value = "1";
+        document.getElementById("addColor").value = "";
+        document.getElementById("addDesc").value = "";
+        document.getElementById("addImageFile").value = "";
+        document.getElementById("hasSizesToggle").checked = false;
+
+        // Generate the 1-18 size grid automatically!
+        let gridHtml = "";
+        for (let i = 1; i <= 18; i++) {
+          gridHtml += `
+            <div class="flex flex-col items-center bg-white p-2 rounded-lg border border-blue-100">
+              <span class="text-[10px] font-bold text-gray-500 mb-1">Size ${i}</span>
+              <input type="number" id="sizeQty_${i}" min="0" value="0" class="w-full text-center bg-gray-50 border border-gray-200 rounded text-[13px] font-bold py-1 focus:border-blue-400 focus:bg-white outline-none">
+            </div>
+          `;
+        }
+        document.getElementById("sizeGrid").innerHTML = gridHtml;
+        toggleSizeUI();
+      }
+
+      async function submitNewProduct() {
+        const name = document.getElementById("addName").value.trim();
+        const color = document.getElementById("addColor").value.trim();
+        const desc = document.getElementById("addDesc").value.trim();
+        const imageFile = document.getElementById("addImageFile").files[0];
+        const hasSizes = document.getElementById("hasSizesToggle").checked;
+
+        if (!name) {
+          alert("Product Name required!");
+          return;
+        }
+
+        let sizesObj = {};
+
+        if (hasSizes) {
+          // Loop through 1 to 18 and grab any sizes that have a quantity > 0
+          for (let i = 1; i <= 18; i++) {
+            let qty =
+              parseInt(document.getElementById(`sizeQty_${i}`).value) || 0;
+            if (qty > 0) sizesObj[i.toString()] = qty;
+          }
+          if (Object.keys(sizesObj).length === 0) {
+            alert("Add at least 1 size!");
+            return;
+          }
+        } else {
+          const simpleQty =
+            parseInt(document.getElementById("addStock").value) || 0;
+          if (simpleQty <= 0) {
+            alert("Quantity must be at least 1");
+            return;
+          }
+          sizesObj["Standard"] = simpleQty;
+        }
+
+        const formData = new FormData();
+        formData.append("folderPath", targetFolderForProduct);
+        formData.append("name", name);
+        formData.append("color", color);
+        formData.append("description", desc);
+        formData.append("sizes", JSON.stringify(sizesObj));
+        if (imageFile) formData.append("image", imageFile);
+
+        try {
+          const response = await fetch(`${API_URL}/api/products`, {
+            method: "POST",
+            body: formData,
+          });
+          const result = await response.json();
+          if (result.success) {
+            closeAddProductModal();
+            renderCurrentLevel();
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      // ==========================================
+      // PHASE 1 & 2: CART MEMORY AND UI
+      // ==========================================
+      let shoppingCart = [];
+
+      // 2. Update the Floating Button
+      function updateCartUI() {
+        const floatingBtn = document.getElementById("floatingCartBtn");
+
+        if (shoppingCart.length === 0) {
+          floatingBtn.classList.add("hidden");
+          closeCartModal(); // Auto-close if the cart becomes empty
+          return;
+        }
+
+        floatingBtn.classList.remove("hidden");
+
+        const totalAmount = shoppingCart.reduce(
+          (sum, item) => sum + item.price,
+          0,
+        );
+
+        document.getElementById("cartItemCount").innerText =
+          `${shoppingCart.length} ${shoppingCart.length === 1 ? "Item" : "Items"}`;
+        document.getElementById("cartTotalDisplay").innerText =
+          `${totalAmount} MAD`;
+
+        // Refresh the modal contents silently in the background
+        renderCartList();
+      }
+
+      // 3. Draw the items inside the Cart Modal
+      function renderCartList() {
+        const container = document.getElementById("cartItemsContainer");
+        const totalAmount = shoppingCart.reduce(
+          (sum, item) => sum + item.price,
+          0,
+        );
+
+        document.getElementById("cartGrandTotal").innerText =
+          `${totalAmount} MAD`;
+
+        container.innerHTML = shoppingCart
+          .map(
+            (item, index) => `
+          <div class="flex justify-between items-center bg-white border border-gray-100 p-4 rounded-[16px] shadow-sm">
+            <div>
+              <h4 class="text-[14px] font-bold text-brandtext mb-1">${item.name}</h4>
+              <span class="text-[11px] font-bold bg-gray-100 text-gray-500 px-2 py-1 rounded tracking-wide">SIZE: ${item.size}</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-[15px] font-black text-[#059669]">${item.price} MAD</span>
+              <button onclick="removeFromCart(${index})" class="text-red-400 hover:text-red-600 bg-red-50 w-8 h-8 rounded-full flex items-center justify-center transition-all">
+                🗑️
+              </button>
+            </div>
+          </div>
+        `,
+          )
+          .join("");
+      }
+
+      // 4. Remove an item from the cart
+      function removeFromCart(index) {
+        shoppingCart.splice(index, 1);
+        updateCartUI();
+      }
+
+      // 5. Open/Close Modal functions
+      function openCartModal() {
+        renderCartList();
+        document.getElementById("cartModal").classList.remove("hidden");
+      }
+
+      function closeCartModal() {
+        document.getElementById("cartModal").classList.add("hidden");
+      }
+
+      function processBulkCheckout() {
+        alert(
+          "Phase 1 & 2 Complete! We will wire this to the MySQL Database in Phase 3.",
+        );
+      }
+
+      // --- THE LIGHTNING-FAST CHECKOUT POPUP ---
+      // Make sure your Product Card HTML passes sizes: onclick="openSellModal(${prod.id}, '${prod.product_name}', '${(prod.sizes || '').replace(/'/g, "\\'")}')"
+
+      let currentSellItem = null;
+      let selectedSizeForSale = null;
+
+      // 4. Update the Back Button logic to use the new engine
+      function goBackOneLevel() {
+        currentDrillPath.pop(); // Remove the current folder
+        renderCurrentLevel(); // Let the engine figure out what to draw
+      }
+
+      function adminLogin() {
+        if (isAdmin) {
+          alert("You are already logged in as Admin!");
+          return;
+        }
+        // Show the custom modal instead of the ugly prompt
+        document.getElementById("adminPinInput").value = "";
+        document.getElementById("pinErrorMsg").classList.add("hidden");
+        document.getElementById("pinModal").classList.remove("hidden");
+        document.getElementById("adminPinInput").focus(); // Auto-selects the input box
+      }
+
+      function closePinModal() {
+        document.getElementById("pinModal").classList.add("hidden");
+      }
+
+      // --- BULLETPROOF TAB SWITCHER ---
+      function switchTab(tabName) {
+        ["overview", "inventory", "sales", "profile"].forEach((t) => {
+          const tab = document.getElementById(`tab-${t}`);
+          if (tab) tab.classList.add("hidden");
+        });
+
+        const activeTab = document.getElementById(`tab-${tabName}`);
+        if (activeTab) activeTab.classList.remove("hidden");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        ["overview", "inventory", "sales", "profile"].forEach((t) => {
+          const navBtn = document.getElementById(`nav-${t}`);
+          const textSpan = document.getElementById(`text-${t}`);
+          const iconDiv = document.getElementById(`icon-${t}`);
+
+          if (navBtn) {
+            navBtn.classList.remove("text-brand");
+            navBtn.classList.add("text-gray-400");
+          }
+          if (textSpan) {
+            textSpan.classList.remove("font-bold");
+            textSpan.classList.add("font-medium");
+          }
+          if (iconDiv)
+            iconDiv.classList.remove("bg-cardGreenBg", "text-cardGreenIcon");
+        });
+
+        const activeNavBtn = document.getElementById(`nav-${tabName}`);
+        const activeTextSpan = document.getElementById(`text-${tabName}`);
+        const activeIconDiv = document.getElementById(`icon-${tabName}`);
+
+        if (activeNavBtn) {
+          activeNavBtn.classList.remove("text-gray-400");
+          activeNavBtn.classList.add("text-brand");
+        }
+        if (activeTextSpan) {
+          activeTextSpan.classList.remove("font-medium");
+          activeTextSpan.classList.add("font-bold");
+        }
+        if (activeIconDiv)
+          activeIconDiv.classList.add("bg-cardGreenBg", "text-cardGreenIcon");
+      }
+      // --- FETCH AND RENDER LOGIC ---
+      function updateDashboardMetrics(items) {
+        if (!items) return; // Stop if there's no data
+
+        let totalUnits = 0;
+        let lowStockCount = 0;
+
+        items.forEach((p) => {
+          totalUnits += p.stock_quantity || 0;
+          if (p.stock_quantity <= (p.min_threshold || 2)) {
+            lowStockCount++;
+          }
+        });
+
+        // 1. Find the HTML elements
+        const overviewUnits = document.getElementById("overview-units");
+        const overviewLowStock = document.getElementById("overview-low-stock");
+
+        // 2. ONLY update them if they actually exist on the screen right now
+        if (overviewUnits) {
+          overviewUnits.innerText = totalUnits;
+        }
+        if (overviewLowStock) {
+          overviewLowStock.innerText = lowStockCount;
+        }
+      }
+
+      async function loadLiveInventory() {
+        try {
+          const response = await fetch(`${API_URL}/api/inventory`);
+          allProducts = await response.json();
+          renderLevel1Categories();
+
+          // Safely update Overview tab metrics using 'allProducts' instead of 'items'
+          const overviewUnits = document.getElementById("overview-units");
+          const overviewLowStock =
+            document.getElementById("overview-low-stock");
+
+          if (allProducts) {
+            let totalUnits = 0;
+            let lowStockCount = 0;
+
+            allProducts.forEach((p) => {
+              totalUnits += p.stock_quantity || 0;
+              // Assuming low stock is 2 or fewer items left
+              if (p.stock_quantity <= (p.min_threshold || 2)) lowStockCount++;
+            });
+
+            if (overviewUnits) overviewUnits.innerText = totalUnits;
+            if (overviewLowStock) overviewLowStock.innerText = lowStockCount;
+          }
+        } catch (err) {
+          console.error("Error fetching inventory:", err);
+          const invContainer = document.getElementById("inventoryList");
+          if (invContainer) {
+            invContainer.innerHTML = `<p>Error loading...</p>`;
+          }
+        }
+      }
+      function setCategoryFilter(category) {
+        currentCategoryFilter = category;
+
+        // Update pill colors
+        const pills = document.querySelectorAll(
+          "#categoryPillsContainer button",
+        );
+        pills.forEach((pill) => {
+          if (pill.id === `pill-${category}`) {
+            pill.className =
+              "px-5 py-2 rounded-full text-[13px] font-bold bg-[#1e293b] text-white border border-[#1e293b] transition-all";
+          } else {
+            pill.className =
+              "px-5 py-2 rounded-full text-[13px] font-bold bg-white text-gray-500 border border-gray-200 hover:border-gray-300 transition-all";
+          }
+        });
+
+        filterInventory(); // Re-filter the list
+      }
+
+      function filterInventory() {
+        const searchTerm = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+
+        const filtered = allProducts.filter((product) => {
+          // Check if search text matches product name
+          const matchesSearch = product.product_name
+            .toLowerCase()
+            .includes(searchTerm);
+
+          // Check if category matches (or if 'All' is selected)
+          // Adjust 'product.category_name' if your DB column is named differently
+          const matchesCategory =
+            currentCategoryFilter === "All" ||
+            product.category_name === currentCategoryFilter;
+
+          return matchesSearch && matchesCategory;
+        });
+
+        // Draw the filtered list
+        renderProducts(filtered);
+      }
+      function renderProducts(items) {
+        const container = document.getElementById("inventoryList");
+        const countLabel = document.getElementById("inventory-count");
+
+        if (!items || items.length === 0) {
+          container.innerHTML = `<p class="text-center text-gray-500 font-medium py-10">No items match your search.</p>`;
+          countLabel.innerText = "0 products available";
+          return;
+        }
+
+        countLabel.innerText = `${items.length} product styles available`;
+
+        container.innerHTML = items
+          .map((prod) => {
+            const imgSrc = prod.image_url
+              ? prod.image_url.startsWith("http")
+                ? prod.image_url
+                : API_URL + prod.image_url
+              : "https://via.placeholder.com/300x300?text=Bag+Image";
+            const stockBadgeClass =
+              prod.stock_quantity <= (prod.min_threshold || 2)
+                ? "bg-red-50 text-red-600 border border-red-100"
+                : "bg-white/95 text-gray-600 shadow-sm";
+
+            const safeName = prod.product_name
+              .replace(/'/g, "\\'")
+              .replace(/"/g, "&quot;");
+            const safeSizes = (prod.sizes || "{}")
+              .replace(/'/g, "\\'")
+              .replace(/"/g, "&quot;");
+
+            // Clean up description and color for the edit modal
+            const safeDesc = (prod.description || "")
+              .replace(/'/g, "\\'")
+              .replace(/"/g, "&quot;");
+            const safeColor = (prod.color || "")
+              .replace(/'/g, "\\'")
+              .replace(/"/g, "&quot;");
+
+            return `
+            <div class="bg-white rounded-[24px] border border-gray-100 shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] p-2 relative ${prod.stock_quantity <= 0 ? "opacity-50 grayscale-[50%]" : ""}">
+              
+              <!-- ADDED ADMIN EDIT & DELETE BUTTONS HERE -->
+              ${
+                typeof isAdmin !== "undefined" && isAdmin
+                  ? `
+                <div class="absolute top-4 right-4 flex gap-1.5 z-10">
+                  <button onclick="openEditProductModal(${prod.id}, '${safeName}', '${safeColor}', '${safeDesc}')" class="bg-blue-50 text-blue-500 w-8 h-8 rounded-full flex items-center justify-center border-2 border-white hover:bg-blue-500 hover:text-white transition-all shadow-md text-sm cursor-pointer">
+                    ✏️
+                  </button>
+                  <button onclick="triggerDeleteProduct(${prod.id}, '${safeName}')" class="bg-red-50 text-red-500 w-8 h-8 rounded-full flex items-center justify-center border-2 border-white hover:bg-red-500 hover:text-white transition-all shadow-md font-bold cursor-pointer">
+                    &times;
+                  </button>
+                </div>
+              `
+                  : ""
+              }
+              <!-- END ADMIN BUTTONS -->
+
+              <div class="relative h-[220px] rounded-[18px] bg-gray-100 overflow-hidden">
+                <img src="${imgSrc}" class="w-full h-full object-cover" alt="${safeName}">
+                <div class="absolute top-3 left-3 backdrop-blur-sm px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase ${stockBadgeClass}">
+                  ${prod.stock_quantity} Total Stock
+                </div>
+              </div>
+              <div class="px-3 pt-4 pb-2">
+                <h3 class="text-[16px] font-bold text-brandtext">${prod.product_name}</h3>
+                <div class="flex justify-between items-center mt-2 mb-3">
+                  <span class="text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-1 rounded border border-gray-200 uppercase">${prod.color || "STANDARD"}</span>
+                  
+                  <button onclick="showStockInfo('${safeSizes}')" class="text-[12px] font-black hover:opacity-70 transition-all ${prod.stock_quantity > 0 ? "text-blue-600" : "text-red-500"}">
+                    ${prod.stock_quantity > 0 ? `${prod.stock_quantity} IN STOCK` : "OUT OF STOCK"}
+                  </button>
+                </div>
+                
+                <div class="flex gap-2 mt-5">
+                  ${
+                    isAdmin
+                      ? `
+                  <button onclick="openRestockModal(${prod.id}, '${safeSizes}')" class="flex-1 bg-gray-100 hover:bg-gray-200 transition-all text-gray-600 py-[14px] rounded-[16px] text-[13px] font-bold flex justify-center items-center">
+                    + Restock
+                  </button>
+                  `
+                      : ""
+                  }
+                  <button ${prod.stock_quantity <= 0 ? "disabled" : ""} onclick="openSellModal(${prod.id}, '${safeName}', '${safeSizes}')" class="${isAdmin ? "flex-[2]" : "w-full"} ${prod.stock_quantity > 0 ? "bg-[#059669] hover:bg-[#047857] text-white" : "bg-gray-200 text-gray-400"} py-[14px] rounded-[16px] text-[13px] font-bold flex justify-center items-center transition-all">
+                    Select & Sell
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+          })
+          .join("");
+      }
+      // --- SEARCH & FILTER LOGIC ---
+      document.addEventListener("DOMContentLoaded", () => {
+        const searchInput = document.getElementById("searchInput");
+        if (searchInput) {
+          searchInput.addEventListener("input", (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredProducts = allProducts.filter(
+              (item) =>
+                item.product_name.toLowerCase().includes(searchTerm) ||
+                item.category_name.toLowerCase().includes(searchTerm),
+            );
+            renderProducts(filteredProducts);
+          });
+        }
+      });
+
+      function filterCategory(categoryName) {
+        const buttons = document.querySelectorAll(".category-btn");
+        buttons.forEach((btn) => {
+          if (
+            btn.innerText.includes(categoryName) ||
+            (categoryName === "Bags & Luggage" && btn.innerText === "Bags")
+          ) {
+            btn.className =
+              "category-btn bg-brand text-white px-5 py-2.5 rounded-full text-[13px] font-semibold shrink-0 transition-colors";
+          } else {
+            btn.className =
+              "category-btn bg-white border border-gray-200 text-gray-500 hover:bg-gray-50 px-5 py-2.5 rounded-full text-[13px] font-medium shrink-0 transition-colors";
+          }
+        });
+
+        if (categoryName === "All") {
+          renderProducts(allProducts);
+        } else {
+          const filtered = allProducts.filter(
+            (item) =>
+              item.category_name.toLowerCase() === categoryName.toLowerCase(),
+          );
+          renderProducts(filtered);
+        }
+      }
+
+      // --- MODAL & SELL LOGIC ---
+      function openSellModal(groupIndex) {
+        activeProductGroup = currentGroupedProducts[groupIndex];
+
+        document.getElementById("modalProductName").innerText =
+          activeProductGroup.product_name;
+        document.getElementById("sellPrice").value = "";
+        document.getElementById("sellModal").classList.remove("hidden");
+
+        const colorDropdown = document.getElementById("sellColor");
+        let uniqueColors = [
+          ...new Set(activeProductGroup.variants.map((v) => v.color)),
+        ].filter(Boolean);
+        if (uniqueColors.length === 0) uniqueColors = ["Standard"];
+
+        colorDropdown.innerHTML = uniqueColors
+          .map((c) => `<option value="${c}">${c}</option>`)
+          .join("");
+        updateSizeDropdown();
+      }
+      // --- RESTOCK LOGIC ---
+      let restockProductId = null;
+
+      function openRestockModal(id, sizesStr) {
+        restockProductId = id;
+        let sizesObj = {};
+        try {
+          sizesObj = JSON.parse(sizesStr);
+        } catch (e) {}
+
+        const select = document.getElementById("restockSizeSelect");
+        select.innerHTML = "";
+
+        // Fill the dropdown with the sizes that exist for this item
+        for (let size in sizesObj) {
+          select.innerHTML += `<option value="${size}">${size} (Currently: ${sizesObj[size]})</option>`;
+        }
+
+        document.getElementById("restockQty").value = "1";
+        document.getElementById("restockModal").classList.remove("hidden");
+      }
+
+      function closeRestockModal() {
+        document.getElementById("restockModal").classList.add("hidden");
+      }
+
+      async function submitRestock() {
+        const size = document.getElementById("restockSizeSelect").value;
+        const addQty = document.getElementById("restockQty").value;
+
+        try {
+          const response = await fetch(
+            `${API_URL}/api/restock/${restockProductId}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ size, addQty }),
+            },
+          );
+          const resData = await response.json();
+          if (resData.success) {
+            closeRestockModal();
+            renderCurrentLevel(); // Instantly updates the UI!
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      // --- SALES HISTORY LOGIC ---
+      async function loadLiveSales() {
+        try {
+          const response = await fetch(`${API_URL}/api/sales`);
+          if (!response.ok) throw new Error("Endpoint not found");
+
+          const sales = await response.json();
+          const container = document.getElementById("salesList");
+          const revenueLabel = document.getElementById("metric-revenue");
+
+          if (!sales || sales.length === 0) {
+            if (container)
+              container.innerHTML = `<p class="text-center text-gray-500 text-sm font-medium py-8">No sales completed yet.</p>`;
+            if (revenueLabel) revenueLabel.innerText = "0 MAD";
+            return;
+          }
+
+          // Calculate "Today" vs "Last 7 Days"
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const sevenDaysAgo = new Date();
+          sevenDaysAgo.setDate(today.getDate() - 7);
+          sevenDaysAgo.setHours(0, 0, 0, 0);
+
+          let todayTotal = 0;
+          let weekTotal = 0;
+          let allTimeTotal = 0;
+
+          sales.forEach((sale) => {
+            const salePrice = Number(sale.price) || 0;
+            
+            // Only add to "Today's Sales" if it HAS NOT been cleared by a Z-Report
+            if (sale.is_cleared === 0) {
+              todayTotal += salePrice; 
+            }
+            
+            // The 7-Day tracker still tracks everything historically
+            if (sale.created_at) {
+              const saleDate = new Date(sale.created_at);
+              if (saleDate >= sevenDaysAgo) {
+                weekTotal += salePrice;
+              }
+            }
+          });
+
+          // Update all revenue metrics safely
+          if (revenueLabel) revenueLabel.innerText = `${allTimeTotal} MAD`;
+
+          const metricToday = document.getElementById("metric-today");
+          const metricWeek = document.getElementById("metric-week");
+          const overviewRev = document.getElementById("overview-revenue");
+
+          if (metricToday) metricToday.innerText = `${todayTotal} MAD`;
+          if (metricWeek) metricWeek.innerText = `${weekTotal} MAD`;
+          if (overviewRev) overviewRev.innerText = `${todayTotal} MAD`; // Fix: Placed AFTER the math!
+
+          if (container) {
+            container.innerHTML = sales
+              .map((sale) => {
+                const safeName = (sale.product_name || "Store Item").replace(
+                  /"/g,
+                  "&quot;",
+                );
+                let timeString = "Just now";
+                if (sale.created_at) {
+                  const dateObj = new Date(sale.created_at);
+                  timeString = dateObj.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  });
+                }
+                const imgSrc = sale.image_url
+                  ? sale.image_url.startsWith("http")
+                    ? sale.image_url
+                    : API_URL + sale.image_url
+                  : "https://via.placeholder.com/150x150?text=Sold";
+
+                return `
+                <div class="flex justify-between items-center pb-4 border-b border-gray-50 last:border-0 last:pb-0 hover:bg-gray-50 transition-colors rounded-xl p-2 -mx-2">
+                  <div class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity w-full" data-name="${safeName}" onclick="jumpToProductFromLedger(this)">
+                    <img src="${imgSrc}" class="w-10 h-10 rounded-xl object-cover shadow-sm bg-gray-100 shrink-0">
+                    <div class="flex-1">
+                      <h3 class="text-[14px] font-bold text-gray-800 line-clamp-1">${safeName}</h3>
+                      <p class="text-[11px] font-medium text-gray-400 mt-0.5">${timeString} • Cashier</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-4 shrink-0 pl-2">
+                    <span class="text-[15px] font-bold text-[#059669] whitespace-nowrap shrink-0">${sale.price || 0} MAD</span>
+                    ${typeof isAdmin !== "undefined" && isAdmin ? `<button onclick="processReturn('${sale.sale_id}')" class="text-[11px] font-bold bg-red-50 text-red-500 px-3 py-1.5 rounded-lg border border-red-100 hover:bg-red-500 hover:text-white transition-colors shadow-sm cursor-pointer shrink-0">Undo</button>` : ""}
+                  </div>
+                </div>
+              `;
+              })
+              .join("");
+          }
+        } catch (err) {
+          console.error("Ledger offline:", err);
+          const container = document.getElementById("salesList");
+          if (container)
+            container.innerHTML = `<p class="text-center text-gray-400 text-sm font-medium py-8">Waiting for backend connection...</p>`;
+        }
+      }
+      // --- JUMP TO PRODUCT LOGIC ---
+      async function jumpToProductFromLedger(element) {
+        const fullProductName = element.getAttribute("data-name");
+        if (!fullProductName) return;
+        const searchName = fullProductName.split(" (")[0].trim();
+
+        // Open the modal instantly with a loading message
+        const modal = document.getElementById("ledgerProductModal");
+        const content = document.getElementById("ledgerModalContent");
+
+        modal.classList.remove("hidden");
+        // Tiny delay to allow the CSS animation to trigger smoothly
+        setTimeout(() => {
+          modal.classList.remove("opacity-0");
+          modal.children[0].classList.remove("scale-95");
+        }, 10);
+
+        content.innerHTML = `<p class="text-gray-500 py-8 font-bold animate-pulse">Pulling up ${searchName}...</p>`;
+
+        try {
+          // Fetch the live product data
+          const res = await fetch(`${API_URL}/api/inventory`);
+          const allProducts = await res.json();
+
+          const matched = allProducts.find((p) =>
+            p.product_name.toLowerCase().includes(searchName.toLowerCase()),
+          );
+
+          if (matched) {
+            const imgSrc = matched.image_url
+              ? matched.image_url.startsWith("http")
+                ? matched.image_url
+                : API_URL + matched.image_url
+              : "https://via.placeholder.com/150";
+
+            // Draw the product details
+            content.innerHTML = `
+              <img src="${imgSrc}" class="w-32 h-32 object-cover rounded-2xl mx-auto shadow-sm bg-gray-50 mb-4 border border-gray-100">
+              <h2 class="text-[16px] font-bold text-gray-800 leading-tight">${matched.product_name}</h2>
+              
+              <div class="flex justify-center gap-3 mt-5">
+                <div class="bg-[#d1fae5] px-4 py-3 rounded-xl flex-1 border border-[#a7f3d0]">
+                  <p class="text-[10px] uppercase font-black text-[#059669] tracking-wider mb-1">Price</p>
+                  <p class="font-black text-[#047857] text-[15px]">${matched.price} MAD</p>
+                </div>
+                <div class="bg-blue-50 px-4 py-3 rounded-xl flex-1 border border-blue-100">
+                  <p class="text-[10px] uppercase font-black text-blue-600 tracking-wider mb-1">In Stock</p>
+                  <p class="font-black text-blue-700 text-[15px]">${matched.stock_quantity}</p>
+                </div>
+              </div>
+            `;
+          } else {
+            content.innerHTML = `
+              <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+              </div>
+              <p class="text-red-500 font-bold">Product no longer in inventory.</p>
+            `;
+          }
+        } catch (e) {
+          console.error("Failed to load product:", e);
+          content.innerHTML = `<p class="text-red-500 py-8 font-bold">Error connecting to server.</p>`;
+        }
+      }
+
+      function closeLedgerModal() {
+        const modal = document.getElementById("ledgerProductModal");
+        modal.classList.add("opacity-0");
+        modal.children[0].classList.add("scale-95");
+        // Wait for the fade-out animation to finish before hiding it entirely
+        setTimeout(() => {
+          modal.classList.add("hidden");
+        }, 300);
+      }
+
+      // --- NEW: Safely restore the folder view ---
+      function updateProfileUI() {
+        const roleName = document.getElementById("profileRoleName");
+        const accessLevel = document.getElementById("profileAccessLevel");
+        const avatar = document.getElementById("profileAvatar");
+        const toggleBtn = document.getElementById("adminToggleButton");
+        const addProductBtn = document.getElementById("adminAddProductBtn"); // Grab the new button
+
+        if (!roleName || !toggleBtn) return;
+
+        if (isAdmin) {
+          roleName.innerText = "Manager";
+          accessLevel.innerText = "Full Admin Access";
+          accessLevel.className = "text-[13px] font-bold text-blue-500";
+          avatar.innerText = "👑";
+          avatar.className =
+            "w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center text-2xl transition-all";
+
+          toggleBtn.innerText = "Lock Admin Mode";
+          toggleBtn.className =
+            "w-full bg-red-50 text-red-600 font-bold py-3.5 rounded-xl text-[14px] hover:bg-red-100 transition-all";
+          toggleBtn.onclick = logoutAdmin;
+
+          // UNHIDE the + New Product button
+          if (addProductBtn) addProductBtn.classList.remove("hidden");
+        } else {
+          roleName.innerText = "Cashier";
+          accessLevel.innerText = "Standard Access";
+          accessLevel.className = "text-[13px] text-gray-500 font-medium";
+          avatar.innerText = "👤";
+          avatar.className =
+            "w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center text-2xl transition-all";
+
+          toggleBtn.innerText = "Unlock Admin Mode";
+          toggleBtn.className =
+            "w-full bg-gray-100 text-gray-700 font-bold py-3.5 rounded-xl text-[14px] hover:bg-gray-200 transition-all";
+          toggleBtn.onclick = adminLogin;
+
+          // HIDE the + New Product button
+          if (addProductBtn) addProductBtn.classList.add("hidden");
+        }
+      }
+
+      function submitPin() {
+        const pin = document.getElementById("adminPinInput").value;
+        if (pin === ADMIN_PIN) {
+          isAdmin = true;
+          updateProfileUI();
+          closePinModal();
+
+          // THE FIX: Tell the app to redraw BOTH tabs so the Admin buttons appear everywhere
+          renderLevel1Categories();
+          loadLiveSales();
+        } else {
+          // Show error text and clear the box
+          document.getElementById("pinErrorMsg").classList.remove("hidden");
+          document.getElementById("adminPinInput").value = "";
+          document.getElementById("adminPinInput").focus();
+        }
+      }
+
+      function logoutAdmin() {
+        isAdmin = false;
+        updateProfileUI();
+
+        // THE FIX: Redraw both tabs to securely hide the buttons again
+        renderLevel1Categories();
+        loadLiveSales();
+
+        alert("Admin Mode Locked. Returned to Cashier Mode.");
+      }
+
+      // --- ADD PRODUCT MODAL LOGIC ---
+      let isCustomCategory = false;
+
+      function toggleNewCategory() {
+        isCustomCategory = !isCustomCategory;
+        const selectEl = document.getElementById("addCategory");
+        const customEl = document.getElementById("addCategoryCustom");
+        const btnEl = document.getElementById("toggleCategoryBtn");
+
+        if (isCustomCategory) {
+          selectEl.classList.add("hidden");
+          customEl.classList.remove("hidden");
+          customEl.focus();
+          btnEl.innerHTML = "&times;";
+          btnEl.className =
+            "bg-red-50 text-red-500 hover:bg-red-100 w-12 h-[46px] rounded-xl font-bold flex items-center justify-center transition-all text-xl";
+        } else {
+          selectEl.classList.remove("hidden");
+          customEl.classList.add("hidden");
+          customEl.value = "";
+          btnEl.innerHTML = "+";
+          btnEl.className =
+            "bg-gray-200 text-gray-600 hover:bg-gray-300 w-12 h-[46px] rounded-xl font-bold flex items-center justify-center transition-all text-lg";
+        }
+      }
+
+      // --- ADD PRODUCT LOGIC ---
+      let targetFolderForProduct = "";
+
+      // (closeAddProductModal stays exactly the same)
+      function closeAddProductModal() {
+        document.getElementById("addProductModal").classList.add("hidden");
+
+        // Reset the form
+        document.getElementById("addName").value = "";
+        document.getElementById("addBrand").value = "";
+        document.getElementById("addImage").value = "";
+        document.getElementById("addColor").value = "";
+        document.getElementById("addSize").value = "";
+        document.getElementById("addPrice").value = "";
+        document.getElementById("addStock").value = "1";
+
+        // Reset category toggle if it was left open
+        if (isCustomCategory) toggleNewCategory();
+      }
+
+      // --- DELETE PRODUCT LOGIC ---
+      let productIdToDelete = null;
+
+      function triggerDeleteProduct(id, name) {
+        productIdToDelete = id;
+        document.getElementById("deleteProductName").innerText = `"${name}"`;
+        document
+          .getElementById("deleteProductModal")
+          .classList.remove("hidden");
+      }
+
+      function closeDeleteProductModal() {
+        document.getElementById("deleteProductModal").classList.add("hidden");
+        productIdToDelete = null;
+      }
+
+      async function confirmDeleteProduct() {
+        if (!productIdToDelete) return;
+
+        try {
+          await fetch(`${API_URL}/api/products/${productIdToDelete}`, {
+            method: "DELETE",
+          });
+          closeDeleteProductModal();
+          renderCurrentLevel(); // Instantly removes the card from the screen!
+        } catch (err) {
+          console.error(err);
+          alert("Failed to delete product.");
+        }
+      }
+
+      // ==========================================
+      // CHECKOUT & CART UI LOGIC
+      // ==========================================
+      let activeSellProduct = null;
+      let activeSellSize = null;
+
+      function openSellModal(id, name, sizesStr) {
+        activeSellProduct = { id, name };
+        activeSellSize = null;
+        document.getElementById("sellModalTitle").innerText = `Sell: ${name}`;
+        document.getElementById("sellPrice").value = "";
+
+        let sizesObj = {};
+        try {
+          sizesObj = JSON.parse(sizesStr);
+        } catch (e) {}
+
+        const grid = document.getElementById("sellSizesGrid");
+        const selectorDiv = document.getElementById("sellSizeSelector");
+
+        // If it's a bag (Standard size only), hide the size picker!
+        if (Object.keys(sizesObj).length === 1 && sizesObj["Standard"]) {
+          selectorDiv.classList.add("hidden");
+          activeSellSize = "Standard";
+        } else {
+          // If it's a jersey, show the buttons!
+          selectorDiv.classList.remove("hidden");
+          let btns = "";
+          for (let size in sizesObj) {
+            if (sizesObj[size] > 0) {
+              btns += `<button onclick="selectSellSize('${size}', this)" class="sell-size-btn px-4 py-2 border-2 border-gray-200 rounded-[10px] text-[14px] font-black text-gray-600 hover:border-[#059669] transition-all bg-white min-w-[50px]">
+                 ${size}
+              </button>`;
+            }
+          }
+          grid.innerHTML = btns;
+        }
+
+        document.getElementById("sellModal").classList.remove("hidden");
+      }
+
+      function selectSellSize(size, btnElement) {
+        activeSellSize = size;
+        // Reset all buttons to gray
+        document.querySelectorAll(".sell-size-btn").forEach((b) => {
+          b.classList.remove("bg-[#059669]", "text-white", "border-[#059669]");
+          b.classList.add("text-gray-600", "border-gray-200", "bg-white");
+        });
+        // Turn the clicked button solid green
+        btnElement.classList.remove(
+          "text-gray-600",
+          "border-gray-200",
+          "bg-white",
+        );
+        btnElement.classList.add(
+          "bg-[#059669]",
+          "text-white",
+          "border-[#059669]",
+        );
+      }
+
+      function closeSellModal() {
+        document.getElementById("sellModal").classList.add("hidden");
+      }
+
+      // The new Toast logic
+      function showToast(message) {
+        const toast = document.getElementById("toastNotification");
+        document.getElementById("toastMsg").innerText = message;
+        toast.classList.remove("-translate-y-20", "opacity-0");
+        toast.classList.add("translate-y-0", "opacity-100");
+
+        setTimeout(() => {
+          toast.classList.remove("translate-y-0", "opacity-100");
+          toast.classList.add("-translate-y-20", "opacity-0");
+        }, 2000);
+      }
+
+      // --- THE CART ENGINE ---
+
+      function confirmSale() {
+        if (!activeSellSize) {
+          alert("Please select a size!");
+          return;
+        }
+        const price = parseFloat(document.getElementById("sellPrice").value);
+        if (!price || price <= 0) {
+          alert("Please enter a valid price!");
+          return;
+        }
+
+        shoppingCart.push({
+          productId: activeSellProduct.id,
+          name: activeSellProduct.name,
+          size: activeSellSize,
+          price: price,
+        });
+
+        closeSellModal();
+        updateCartUI();
+        showToast(`Added to Cart: ${activeSellProduct.name}`);
+      }
+
+      function updateCartUI() {
+        const badge = document.getElementById("cartBadgeCounter");
+        if (shoppingCart.length > 0) {
+          badge.innerText = shoppingCart.length;
+          badge.classList.remove("hidden");
+        } else {
+          badge.classList.add("hidden");
+        }
+        renderCartList();
+      }
+
+      function renderCartList() {
+        // Assuming you still have the cartModal HTML from Phase 2!
+        const container = document.getElementById("cartItemsContainer");
+        const total = shoppingCart.reduce((sum, item) => sum + item.price, 0);
+
+        const totalDisplay = document.getElementById("cartGrandTotal");
+        if (totalDisplay) totalDisplay.innerText = `${total} MAD`;
+
+        if (container) {
+          container.innerHTML = shoppingCart
+            .map(
+              (item, index) => `
+            <div class="flex justify-between items-center bg-white border border-gray-100 p-4 rounded-[16px] shadow-sm mb-2">
+              <div>
+                <h4 class="text-[14px] font-bold text-brandtext mb-1">${item.name}</h4>
+                <span class="text-[11px] font-bold bg-gray-100 text-gray-500 px-2 py-1 rounded">Size: ${item.size}</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="text-[15px] font-black text-[#059669]">${item.price} MAD</span>
+                <button onclick="shoppingCart.splice(${index}, 1); updateCartUI();" class="text-red-400 font-bold text-lg">&times;</button>
+              </div>
+            </div>
+          `,
+            )
+            .join("");
+        }
+      }
+
+      async function processBulkCheckout() {
+        if (shoppingCart.length === 0) return;
+        document.getElementById("cartGrandTotal").innerText = "Processing...";
+
+        // Loop through the cart and checkout everything in the background
+        for (let item of shoppingCart) {
+          await fetch(`${API_URL}/api/sell/${item.productId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              price: item.price,
+              productName: item.name,
+              size: item.size,
+            }),
+          });
+        }
+
+        shoppingCart = []; // Empty the cart
+        updateCartUI();
+        closeCartModal();
+        renderCurrentLevel();
+        if (typeof loadLiveSales === "function") loadLiveSales();
+        showToast("Order complete!");
+      }
+      function showStockInfo(sizesStr) {
+        let sizesObj = {};
+        try {
+          sizesObj = JSON.parse(sizesStr);
+        } catch (e) {}
+
+        let html = "";
+        for (let size in sizesObj) {
+          html += `<div class="flex justify-between items-center border-b border-gray-100 py-2">
+                     <span class="text-[14px] font-bold text-gray-600">${size}</span>
+                     <span class="text-[14px] font-black ${sizesObj[size] > 0 ? "text-[#059669]" : "text-red-400"}">${sizesObj[size]} left</span>
+                   </div>`;
+        }
+
+        document.getElementById("sizeInfoList").innerHTML =
+          html || '<p class="text-sm text-gray-400">No size data</p>';
+        document.getElementById("sizeInfoModal").classList.remove("hidden");
+      }
+
+      // --- EDIT PRODUCT LOGIC ---
+      function openEditProductModal(id, name, color, desc) {
+        document.getElementById("editProductId").value = id;
+        document.getElementById("editName").value = name;
+        document.getElementById("editColor").value =
+          color !== "undefined" && color !== "null" ? color : "";
+        document.getElementById("editDesc").value =
+          desc !== "undefined" && desc !== "null" ? desc : "";
+
+        document.getElementById("editProductModal").classList.remove("hidden");
+      }
+
+      function closeEditProductModal() {
+        document.getElementById("editProductModal").classList.add("hidden");
+      }
+
+      async function submitEditProduct() {
+        const id = document.getElementById("editProductId").value;
+        const name = document.getElementById("editName").value.trim();
+        const color = document.getElementById("editColor").value.trim();
+        const desc = document.getElementById("editDesc").value.trim();
+
+        if (!name) {
+          alert("Name is required!");
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_URL}/api/products/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, color, description: desc }),
+          });
+          const result = await response.json();
+
+          if (result.success) {
+            closeEditProductModal();
+            loadLiveInventory(); // Refreshes the global array
+            if (typeof renderCurrentLevel === "function") renderCurrentLevel(); // Refreshes the active folder
+            showToast("Product updated successfully!");
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Failed to update product.");
+        }
+      }
+
+      // --- RETURN / EXCHANGE LOGIC ---
+      async function processReturn(saleId) {
+        if (
+          !confirm(
+            "Are you sure you want to undo this sale and return the item to stock?",
+          )
+        )
+          return;
+
+        try {
+          const response = await fetch(`${API_URL}/api/return/${saleId}`, {
+            method: "POST",
+          });
+          const result = await response.json();
+
+          if (result.success) {
+            showToast("Item restocked perfectly!");
+            loadLiveSales(); // Refresh the ledger instantly
+            loadLiveInventory(); // Refresh the background stock counts
+            if (typeof renderCurrentLevel === "function") renderCurrentLevel(); // Redraw the UI if we are looking at items
+          } else {
+            alert(result.error || "Failed to process return.");
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Error connecting to server.");
+        }
+      }
+      function updateGreeting() {
+        const hour = new Date().getHours();
+        let greeting = "Good evening";
+        if (hour >= 5 && hour < 12) greeting = "Good morning";
+        else if (hour >= 12 && hour < 18) greeting = "Good afternoon";
+
+        const el = document.getElementById("dynamic-greeting");
+        if (el) el.innerText = `${greeting}, Taha.`;
+      }
+      updateGreeting();
+      async function generateZReport() {
+        if (!confirm("Are you sure you want to close the register for today and send the Z-Report?")) return;
+        
+        try {
+          const res = await fetch(`${API_URL}/api/z-report`, { method: 'POST' });
+          const data = await res.json();
+          
+          if (data.success) {
+            alert(`✅ Z-Report Sent Successfully!\n\nTotal Revenue: ${data.revenue} MAD\nItems Sold: ${data.items}`);
+            
+            // This forces the app to instantly refresh and restart the view!
+            window.location.reload(); 
+          } else {
+            alert("❌ Failed to send Z-Report.");
+          }
+        } catch (e) {
+          console.error("Z-Report failed:", e);
+          alert("❌ Cannot connect to the server.");
+        }
+      }      
+      // --- INITIALIZE APP ---
+      loadLiveInventory();
+      loadLiveSales();
+      loadLiveCategories();
+    </script>
+  </body>
+</html>
