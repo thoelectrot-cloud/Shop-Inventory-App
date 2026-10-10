@@ -117,7 +117,7 @@ const storage = multer.diskStorage({
         cb(null, uniqueSuffix + path.extname(file.originalname));
     }
 });
-const upload = multer({ storage: storage });
+const upload = multer({ storage: multer.memoryStorage() });``
 
 // --- CLOUD DATABASE CONNECTION ---
 const db = mysql.createPool({
@@ -195,11 +195,20 @@ app.post('/api/products', upload.single('image'), (req, res) => {
     totalStock += parseInt(parsedSizes[key]);
   }
   
-  const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
+  // Convert the image file in memory to a Base64 string
+  let imageUrl = '';
+  if (req.file) {
+    const base64Image = req.file.buffer.toString('base64');
+    imageUrl = `data:${req.file.mimetype};base64,${base64Image}`;
+  }
+  
   const query = "INSERT INTO products (folder_path, product_name, price, stock_quantity, image_url, color, description, sizes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
   
   db.query(query, [folderPath, name, 0, totalStock, imageUrl, color || '', description || '', sizes || '{}'], (err) => {
-    if (err) return res.status(500).json({ error: "Failed to insert product" });
+    if (err) {
+      console.error("Database Error:", err);
+      return res.status(500).json({ error: "Failed to insert product" });
+    }
     res.json({ success: true });
   });
 });
