@@ -8,8 +8,15 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "handle": "filesystem"
+    },
+    {
+      "src": "/api/(.*)",
       "dest": "server/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
     }
   ]
 }
