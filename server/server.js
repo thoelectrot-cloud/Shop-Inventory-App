@@ -327,6 +327,8 @@ app.post('/api/z-report', (req, res) => {
 });
 // --- SERVE FRONTEND STATIC FILES FOR VERCEL ---
 const path = require('path');
+
+// Step out of the 'server' folder (..) and into the 'public' folder at the root
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('*', (req, res) => {
