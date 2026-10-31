@@ -327,10 +327,10 @@ app.post('/api/z-report', (req, res) => {
 });
 // --- SERVE FRONTEND STATIC FILES FOR VERCEL ---
 const path = require('path');
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
