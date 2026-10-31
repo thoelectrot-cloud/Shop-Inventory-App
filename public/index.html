@@ -1333,7 +1333,7 @@
 
     <!--START OF THE SCRIPT-->
     <script>
-      const API_URL = "https://shop-inventory-app-one.vercel.app";
+      const API_URL = window.location.port === "5501" ? "http://localhost:5000" : "";
       let allProducts = [];
       let currentGroupedProducts = [];
       let activeProductGroup = null;
@@ -1347,6 +1347,7 @@
       // The exact main categories you defined
       let mainCategories = [];
       let inventoryTree = {};
+
       // --- MODAL LOGIC FOR SUBCATEGORIES ---
       function openAddSubcategoryModal(categoryName) {
         document.getElementById("addSubCatTitle").innerText =
@@ -2120,6 +2121,7 @@
           }
         }
       }
+
       function setCategoryFilter(category) {
         currentCategoryFilter = category;
 
@@ -2163,6 +2165,7 @@
         // Draw the filtered list
         renderProducts(filtered);
       }
+
       function renderProducts(items) {
         const container = document.getElementById("inventoryList");
         const countLabel = document.getElementById("inventory-count");
@@ -2177,11 +2180,26 @@
 
         container.innerHTML = items
           .map((prod) => {
-            const imgSrc = prod.image_url
-              ? prod.image_url.startsWith("http")
-                ? prod.image_url
-                : API_URL + prod.image_url
-              : "https://via.placeholder.com/300x300?text=Bag+Image";
+            // --- THE BULLETPROOF IMAGE FIX ---
+            let imgSrc = "https://via.placeholder.com/300x300?text=No+Image";
+
+            if (prod.image_url) {
+              // If it's a new Base64 image OR a full web link, use it directly
+              if (
+                prod.image_url.includes("data:image") ||
+                prod.image_url.includes("http")
+              ) {
+                imgSrc = prod.image_url;
+              }
+              // Otherwise, it's an old local file from the uploads folder
+              else {
+                const cleanPath = prod.image_url.startsWith("/")
+                  ? prod.image_url
+                  : "/" + prod.image_url;
+                imgSrc = API_URL + cleanPath;
+              }
+            }
+
             const stockBadgeClass =
               prod.stock_quantity <= (prod.min_threshold || 2)
                 ? "bg-red-50 text-red-600 border border-red-100"
@@ -2193,8 +2211,6 @@
             const safeSizes = (prod.sizes || "{}")
               .replace(/'/g, "\\'")
               .replace(/"/g, "&quot;");
-
-            // Clean up description and color for the edit modal
             const safeDesc = (prod.description || "")
               .replace(/'/g, "\\'")
               .replace(/"/g, "&quot;");
@@ -2205,22 +2221,17 @@
             return `
             <div class="bg-white rounded-[24px] border border-gray-100 shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] p-2 relative ${prod.stock_quantity <= 0 ? "opacity-50 grayscale-[50%]" : ""}">
               
-              <!-- ADDED ADMIN EDIT & DELETE BUTTONS HERE -->
+              <!-- ADMIN BUTTONS -->
               ${
                 typeof isAdmin !== "undefined" && isAdmin
                   ? `
                 <div class="absolute top-4 right-4 flex gap-1.5 z-10">
-                  <button onclick="openEditProductModal(${prod.id}, '${safeName}', '${safeColor}', '${safeDesc}')" class="bg-blue-50 text-blue-500 w-8 h-8 rounded-full flex items-center justify-center border-2 border-white hover:bg-blue-500 hover:text-white transition-all shadow-md text-sm cursor-pointer">
-                    ✏️
-                  </button>
-                  <button onclick="triggerDeleteProduct(${prod.id}, '${safeName}')" class="bg-red-50 text-red-500 w-8 h-8 rounded-full flex items-center justify-center border-2 border-white hover:bg-red-500 hover:text-white transition-all shadow-md font-bold cursor-pointer">
-                    &times;
-                  </button>
+                  <button onclick="openEditProductModal(${prod.id}, '${safeName}', '${safeColor}', '${safeDesc}')" class="bg-blue-50 text-blue-500 w-8 h-8 rounded-full flex items-center justify-center border-2 border-white hover:bg-blue-500 hover:text-white transition-all shadow-md text-sm cursor-pointer">✏️</button>
+                  <button onclick="triggerDeleteProduct(${prod.id}, '${safeName}')" class="bg-red-50 text-red-500 w-8 h-8 rounded-full flex items-center justify-center border-2 border-white hover:bg-red-500 hover:text-white transition-all shadow-md font-bold cursor-pointer">&times;</button>
                 </div>
               `
                   : ""
               }
-              <!-- END ADMIN BUTTONS -->
 
               <div class="relative h-[220px] rounded-[18px] bg-gray-100 overflow-hidden">
                 <img src="${imgSrc}" class="w-full h-full object-cover" alt="${safeName}">
@@ -2232,7 +2243,6 @@
                 <h3 class="text-[16px] font-bold text-brandtext">${prod.product_name}</h3>
                 <div class="flex justify-between items-center mt-2 mb-3">
                   <span class="text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-1 rounded border border-gray-200 uppercase">${prod.color || "STANDARD"}</span>
-                  
                   <button onclick="showStockInfo('${safeSizes}')" class="text-[12px] font-black hover:opacity-70 transition-all ${prod.stock_quantity > 0 ? "text-blue-600" : "text-red-500"}">
                     ${prod.stock_quantity > 0 ? `${prod.stock_quantity} IN STOCK` : "OUT OF STOCK"}
                   </button>
@@ -2240,15 +2250,11 @@
                 
                 <div class="flex gap-2 mt-5">
                   ${
-                    isAdmin
-                      ? `
-                  <button onclick="openRestockModal(${prod.id}, '${safeSizes}')" class="flex-1 bg-gray-100 hover:bg-gray-200 transition-all text-gray-600 py-[14px] rounded-[16px] text-[13px] font-bold flex justify-center items-center">
-                    + Restock
-                  </button>
-                  `
+                    typeof isAdmin !== "undefined" && isAdmin
+                      ? `<button onclick="openRestockModal(${prod.id}, '${safeSizes}')" class="flex-1 bg-gray-100 hover:bg-gray-200 transition-all text-gray-600 py-[14px] rounded-[16px] text-[13px] font-bold flex justify-center items-center">+ Restock</button>`
                       : ""
                   }
-                  <button ${prod.stock_quantity <= 0 ? "disabled" : ""} onclick="openSellModal(${prod.id}, '${safeName}', '${safeSizes}')" class="${isAdmin ? "flex-[2]" : "w-full"} ${prod.stock_quantity > 0 ? "bg-[#059669] hover:bg-[#047857] text-white" : "bg-gray-200 text-gray-400"} py-[14px] rounded-[16px] text-[13px] font-bold flex justify-center items-center transition-all">
+                  <button ${prod.stock_quantity <= 0 ? "disabled" : ""} onclick="openSellModal(${prod.id}, '${safeName}', '${safeSizes}')" class="${typeof isAdmin !== "undefined" && isAdmin ? "flex-[2]" : "w-full"} ${prod.stock_quantity > 0 ? "bg-[#059669] hover:bg-[#047857] text-white" : "bg-gray-200 text-gray-400"} py-[14px] rounded-[16px] text-[13px] font-bold flex justify-center items-center transition-all">
                     Select & Sell
                   </button>
                 </div>
@@ -2258,6 +2264,7 @@
           })
           .join("");
       }
+
       // --- SEARCH & FILTER LOGIC ---
       document.addEventListener("DOMContentLoaded", () => {
         const searchInput = document.getElementById("searchInput");
@@ -2399,12 +2406,12 @@
 
           sales.forEach((sale) => {
             const salePrice = Number(sale.price) || 0;
-            
+
             // Only add to "Today's Sales" if it HAS NOT been cleared by a Z-Report
             if (sale.is_cleared === 0) {
-              todayTotal += salePrice; 
+              todayTotal += salePrice;
             }
-            
+
             // The 7-Day tracker still tracks everything historically
             if (sale.created_at) {
               const saleDate = new Date(sale.created_at);
@@ -2647,23 +2654,27 @@
       // --- ADD PRODUCT LOGIC ---
       let targetFolderForProduct = "";
 
-      // (closeAddProductModal stays exactly the same)
       function closeAddProductModal() {
         document.getElementById("addProductModal").classList.add("hidden");
 
-        // Reset the form
-        document.getElementById("addName").value = "";
-        document.getElementById("addBrand").value = "";
-        document.getElementById("addImage").value = "";
-        document.getElementById("addColor").value = "";
-        document.getElementById("addSize").value = "";
-        document.getElementById("addPrice").value = "";
-        document.getElementById("addStock").value = "1";
+        // Safely reset the form fields only if they exist
+        const clearField = (id, defaultVal = "") => {
+          const el = document.getElementById(id);
+          if (el) el.value = defaultVal;
+        };
+
+        clearField("addName");
+        clearField("addBrand");
+        clearField("addImage");
+        clearField("addColor");
+        clearField("addSize");
+        clearField("addPrice");
+        clearField("addStock", "1");
 
         // Reset category toggle if it was left open
-        if (isCustomCategory) toggleNewCategory();
+        if (typeof isCustomCategory !== "undefined" && isCustomCategory)
+          toggleNewCategory();
       }
-
       // --- DELETE PRODUCT LOGIC ---
       let productIdToDelete = null;
 
@@ -2966,17 +2977,26 @@
       }
       updateGreeting();
       async function generateZReport() {
-        if (!confirm("Are you sure you want to close the register for today and send the Z-Report?")) return;
-        
+        if (
+          !confirm(
+            "Are you sure you want to close the register for today and send the Z-Report?",
+          )
+        )
+          return;
+
         try {
-          const res = await fetch(`${API_URL}/api/z-report`, { method: 'POST' });
+          const res = await fetch(`${API_URL}/api/z-report`, {
+            method: "POST",
+          });
           const data = await res.json();
-          
+
           if (data.success) {
-            alert(`✅ Z-Report Sent Successfully!\n\nTotal Revenue: ${data.revenue} MAD\nItems Sold: ${data.items}`);
-            
+            alert(
+              `✅ Z-Report Sent Successfully!\n\nTotal Revenue: ${data.revenue} MAD\nItems Sold: ${data.items}`,
+            );
+
             // This forces the app to instantly refresh and restart the view!
-            window.location.reload(); 
+            window.location.reload();
           } else {
             alert("❌ Failed to send Z-Report.");
           }
@@ -2984,7 +3004,7 @@
           console.error("Z-Report failed:", e);
           alert("❌ Cannot connect to the server.");
         }
-      }      
+      }
       // --- INITIALIZE APP ---
       loadLiveInventory();
       loadLiveSales();
