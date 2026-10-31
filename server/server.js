@@ -90,6 +90,7 @@ function sendZReportDiscord(totalRevenue, totalItems) {
 }
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -323,6 +324,13 @@ app.post('/api/z-report', (req, res) => {
       res.json({ success: true, revenue: totalRevenue, items: totalItems });
     });
   });
+});
+// --- SERVE FRONTEND STATIC FILES FOR VERCEL ---
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
