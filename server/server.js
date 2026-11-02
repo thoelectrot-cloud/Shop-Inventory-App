@@ -185,6 +185,7 @@ app.post('/api/products', upload.single('image'), (req, res) => {
 
 // --- 6. FETCH ALL INVENTORY ---
 app.get('/api/inventory', (req, res) => {
+  res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate=60');
   db.query("SELECT id, product_name, folder_path, stock_quantity, color, image_url FROM products", (err, results) => {
     if (err) return res.status(500).json({ error: "Failed to fetch inventory" });
     res.json(results);
