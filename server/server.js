@@ -102,10 +102,9 @@ const db = mysql.createPool({
   uri: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
   waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+  connectionLimit: 5,
+  connectTimeout: 30000
 });
-
 db.getConnection((err, conn) => {
   if (err) {
     console.error("❌ Cloud DB Connection Failed:", err.message);
