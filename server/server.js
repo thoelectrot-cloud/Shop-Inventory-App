@@ -100,10 +100,12 @@ const upload = multer({ storage: multer.memoryStorage() });
 // --- CLOUD DATABASE CONNECTION ---
 const db = mysql.createPool({
   uri: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
+  ssl: {
+    rejectUnauthorized: false
+  },
   waitForConnections: true,
   connectionLimit: 5,
-  connectTimeout: 30000
+  connectTimeout: 20000
 });
 db.getConnection((err, conn) => {
   if (err) {
